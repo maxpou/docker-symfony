@@ -1,5 +1,7 @@
 # Docker Symfony (NGINX - MySQL - ELK)
 
+[![Build Status](https://travis-ci.org/maxpou/docker-symfony.svg?branch=master)](https://travis-ci.org/maxpou/docker-symfony)
+
 *Credit: This is a fork from [eko/docker-symfony](https://github.com/eko/docker-symfony). Thanks to him :-)*
 
 ## Installation
