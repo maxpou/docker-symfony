@@ -21,6 +21,7 @@ php:
         - application
     links:
         - db
+        - redis
 nginx:
     build: nginx
     ports:
@@ -42,3 +43,7 @@ elk:
         - application
         - php
         - nginx
+redis:
+  image: redis:alpine
+  ports:
+      - 6379:6379
