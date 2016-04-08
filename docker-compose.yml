@@ -13,8 +13,12 @@ db:
         MYSQL_DATABASE: symfony
         MYSQL_USER: root
         MYSQL_PASSWORD: root
+redis:
+  image: redis:alpine
+  ports:
+      - 6379:6379
 php:
-    build: php-fpm
+    build: php7-fpm
     ports:
         - 9000:9000
     volumes_from:
@@ -43,7 +47,3 @@ elk:
         - application
         - php
         - nginx
-redis:
-  image: redis:alpine
-  ports:
-      - 6379:6379
