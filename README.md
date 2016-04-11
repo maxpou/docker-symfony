@@ -4,6 +4,8 @@
 
 *Credit: this is a kind of fork from [eko/docker-symfony](https://github.com/eko/docker-symfony). Thanks to him :-)*
 
+![](http://www.maxpou.fr/images/articles/symfony-docker/schema.png)
+
 ## Installation
 
 1. Retrieve git project
