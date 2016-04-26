@@ -23,7 +23,7 @@
 
     ```bash
     # get containers IP address and update host (replace IP according to your configuration)
-    $ docker inspect --format '{{ .NetworkSettings.IPAddress }}' $(docker ps -f name=php -q)
+    $ docker inspect --format '{{ .NetworkSettings.IPAddress }}' $(docker ps -f name=nginx -q)
     $ sudo echo "171.17.0.1 symfony.dev" >> /etc/hosts
     ```
 
@@ -96,7 +96,7 @@ $ docker exec -ti $(docker ps -f name=php -q) sh -c  "cd /var/www/symfony/ && co
 # SF commands
 $ docker exec -ti $(docker ps -f name=php -q) php /var/www/symfony/app/console cache:clear
 
-# bash commands (no tab :( )
+# bash commands
 $ docker exec -ti $(docker ps -f name=php -q) /bin/bash
 
 # MySQL commands
