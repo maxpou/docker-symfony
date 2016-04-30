@@ -14,11 +14,12 @@
     $ git clone git@github.com:maxpou/docker-symfony.git
     ```
 
-2. move your Symfony project into symfony folder
-3. Build containers with
+2. Move your Symfony project into symfony folder
+3. Build containers with (with and without detached mode)
 
     ```bash
     $ docker-compose up
+    $ docker-compose up -d
     ```
 
 4. Update your host file (add symfony.dev)
@@ -115,10 +116,22 @@ $ docker stats $(docker inspect -f "{{ .Name }}" $(docker ps -q))
 
 # Delete all containers
 $ docker rm $(docker ps -a -q)
+
+# Delete all images
+$ docker rmi $(docker images -q)
 ```
+
+## FAQ
+
+* Got this error: `ERROR: Couldn't connect to Docker daemon at http+docker://localunixsocket - is it running?
+If it's at a non-standard location, specify the URL with the DOCKER_HOST environment variable.` ?  
+Run `docker-compose up -d` instead.
+
+* Permission problem? See [this doc (Setting up Permission)](http://symfony.com/doc/current/book/installation.html#checking-symfony-application-configuration-and-setup)
 
 ## TODO
 
+- [ ] Upgrade ELK stack. Install [Timelion](https://github.com/elastic/timelion) <3
 - [ ] MySQL -> PostgreSQL
 - [ ] Move SF app folder?
 - [ ] use php7-fpm/php.ini

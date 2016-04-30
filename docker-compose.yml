@@ -11,7 +11,7 @@ db:
     environment:
         MYSQL_ROOT_PASSWORD: root
         MYSQL_DATABASE: symfony
-        MYSQL_USER: root
+        MYSQL_USER: user
         MYSQL_PASSWORD: root
 redis:
   image: redis:alpine
