@@ -24,8 +24,6 @@ php:
     links:
         - db
         - redis
-    ports:
-        - 9000:9000
 nginx:
     build: nginx
     links:

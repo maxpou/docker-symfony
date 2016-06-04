@@ -2,9 +2,9 @@
 
 [![Build Status](https://travis-ci.org/purinda/docker-laravel.svg?branch=master)](https://travis-ci.org/purinda/docker-laravel)
 
-*Credit: this is a fork from [maxpou/docker-symfony](https://github.com/maxpou/docker-symfony). Thanks to him :-)*
+*Credit: this is a kind of fork from [maxpou/docker-symfony](https://github.com/maxpou/docker-symfony). Thanks to him :-)*
 
-![](http://www.maxpou.fr/images/articles/symfony-docker/schema.png)
+![Container Architecture](https://raw.githubusercontent.com/purinda/docker-laravel/master/docs/container-architecture.png)
 
 ## Installation
 
@@ -14,15 +14,18 @@
     $ git clone git@github.com:purinda/docker-laravel.git
     ```
 
-2. Symlink your Laravel/Lumen project into app folder (`ln -s <absolute-path-of-laravel-project> app`)
-3. Build containers with (with and without detached mode)
+2. Change directory to the `docker-laravel` (`cd docker-laravel`)
+
+3. Symlink your Laravel/Lumen project into app folder (`ln -s <absolute-path-of-laravel-project> app`)
+
+4. Build containers with (with and without detached mode)
 
     ```bash
     $ docker-compose up
     $ docker-compose up -d
     ```
 
-4. Update your host file (add app.dev)
+5. Update your host file (add app.dev)
 
     ```bash
     # get containers IP address and update host (replace IP according to your configuration )
@@ -30,14 +33,15 @@
     $ sudo echo "171.17.0.1 app.dev" >> /etc/hosts
     ```
 
-If you use `docker-machine` then run the following to get IP address of the vm. 
+    If you use `docker-machine` then run the following to get IP address of the vm. 
 
     ```bash
     $ docker-machine ip <machine-name> 
     $ sudo echo "171.17.0.1 app.dev" >> /etc/hosts
     ```
 
-5. Prepare Laravel/Lumen app
+
+6. Prepare Laravel/Lumen app
     1. Update app/.env (adapt hosts according to previous results)
 
         ```ini
@@ -56,7 +60,7 @@ If you use `docker-machine` then run the following to get IP address of the vm.
         $ docker-compose exec php composer install
         ```
 
-6. Enjoy :-)
+7. Enjoy :-)
 
 ## Using
 
