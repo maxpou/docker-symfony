@@ -25,35 +25,35 @@
 4. Update your host file (add app.dev)
 
     ```bash
-    # get containers IP address and update host (replace IP according to your configuration)
+    # get containers IP address and update host (replace IP according to your configuration )
     $ docker inspect --format '{{ .NetworkSettings.IPAddress }}' $(docker ps -f name=nginx -q)
     $ sudo echo "171.17.0.1 app.dev" >> /etc/hosts
     ```
 
+If you use `docker-machine` then run the following to get IP address of the vm. 
+
+    ```bash
+    $ docker-machine ip <machine-name> 
+    $ sudo echo "171.17.0.1 app.dev" >> /etc/hosts
+    ```
+
 5. Prepare Laravel/Lumen app
-    1. Retrieve DB&Redis IP
+    1. Update app/.env (adapt hosts according to previous results)
 
-        ```bash
-        $ docker inspect --format '{{ .NetworkSettings.IPAddress }}' $(docker ps -f name=db -q)
-        $ docker inspect --format '{{ .NetworkSettings.IPAddress }}' $(docker ps -f name=redis -q)
+        ```ini
+        DB_CONNECTION=mysql
+        DB_DATABASE=laravel
+        DB_DATABASE_TEST=laravel_test
+        DB_HOST=app.dev
+        DB_PORT=3306
+        DB_USERNAME=laravel
+        DB_PASSWORD=laravel
         ```
 
-    2. Update app/.env (adapt hosts according to previous results)
+    2. Composer install
 
         ```yml
-        parameters:
-            database_host: 172.17.0.4
-            database_port: 3306
-            database_name: laravel
-            database_user: root
-            database_password: toor
-            redis_host: 172.17.0.3
-        ```
-
-    3. Composer install
-
-        ```yml
-        $ docker exec -ti $(docker ps -f name=php -q) sh -c  "cd /var/www/laravel/ && composer install"
+        $ docker-compose exec php composer install
         ```
 
 6. Enjoy :-)
