@@ -18,3 +18,5 @@ RUN "date"
 
 # Type docker-php-ext-install to see available extensions
 RUN docker-php-ext-install pdo pdo_mysql
+
+WORKDIR /var/www/laravel

@@ -14,7 +14,7 @@
     $ git clone git@github.com:purinda/docker-laravel.git
     ```
 
-2. Move your Laravel/Lumen project into app folder
+2. Symlink your Laravel/Lumen project into app folder (`ln -s <absolute-path-of-laravel-project> app`)
 3. Build containers with (with and without detached mode)
 
     ```bash
@@ -38,12 +38,12 @@
         $ docker inspect --format '{{ .NetworkSettings.IPAddress }}' $(docker ps -f name=redis -q)
         ```
 
-    2. Update app/paraeters.yml (adapt hosts according to previous results)
+    2. Update app/.env (adapt hosts according to previous results)
 
         ```yml
         parameters:
             database_host: 172.17.0.4
-            database_port: null
+            database_port: 3306
             database_name: laravel
             database_user: root
             database_password: toor
