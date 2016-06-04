@@ -1,18 +1,18 @@
 application:
     build: code
     volumes:
-        - ./symfony:/var/www/symfony
+        - ./app:/var/www/laravel
         - ./logs/symfony:/var/www/symfony/app/logs
     tty: true
 db:
-    image: mysql
+    image: mariadb:latest
     ports:
         - 3306:3306
     environment:
         MYSQL_ROOT_PASSWORD: root
-        MYSQL_DATABASE: symfony
-        MYSQL_USER: user
-        MYSQL_PASSWORD: root
+        MYSQL_DATABASE: laravel
+        MYSQL_USER: root
+        MYSQL_PASSWORD: toor
 redis:
   image: redis:alpine
   ports:

@@ -1,5 +1,5 @@
 FROM debian:jessie
 
-MAINTAINER Maxence POUTORD <maxence.poutord@gmail.com>
+MAINTAINER Purinda Gunasekara <purinda@gmail.com>
 
-VOLUME /var/www/symfony
+VOLUME /var/www/laravel

@@ -1,8 +1,8 @@
-# Docker Symfony (PHP7-FPM - NGINX - MySQL - ELK - REDIS)
+# Docker Laravel (PHP7-FPM - NGINX - MySQL - ELK - REDIS)
 
-[![Build Status](https://travis-ci.org/maxpou/docker-symfony.svg?branch=master)](https://travis-ci.org/maxpou/docker-symfony)
+[![Build Status](https://travis-ci.org/purinda/docker-laravel.svg?branch=master)](https://travis-ci.org/purinda/docker-laravel)
 
-*Credit: this is a kind of fork from [eko/docker-symfony](https://github.com/eko/docker-symfony). Thanks to him :-)*
+*Credit: this is a fork from [maxpou/docker-symfony](https://github.com/maxpou/docker-symfony). Thanks to him :-)*
 
 ![](http://www.maxpou.fr/images/articles/symfony-docker/schema.png)
 
@@ -11,10 +11,10 @@
 1. Retrieve git project
 
     ```bash
-    $ git clone git@github.com:maxpou/docker-symfony.git
+    $ git clone git@github.com:purinda/docker-laravel.git
     ```
 
-2. Move your Symfony project into symfony folder
+2. Move your Laravel/Lumen project into app folder
 3. Build containers with (with and without detached mode)
 
     ```bash
@@ -22,15 +22,15 @@
     $ docker-compose up -d
     ```
 
-4. Update your host file (add symfony.dev)
+4. Update your host file (add app.dev)
 
     ```bash
     # get containers IP address and update host (replace IP according to your configuration)
     $ docker inspect --format '{{ .NetworkSettings.IPAddress }}' $(docker ps -f name=nginx -q)
-    $ sudo echo "171.17.0.1 symfony.dev" >> /etc/hosts
+    $ sudo echo "171.17.0.1 app.dev" >> /etc/hosts
     ```
 
-5. Prepare Symfony app
+5. Prepare Laravel/Lumen app
     1. Retrieve DB&Redis IP
 
         ```bash
@@ -44,32 +44,31 @@
         parameters:
             database_host: 172.17.0.4
             database_port: null
-            database_name: symfony
+            database_name: laravel
             database_user: root
-            database_password: root
+            database_password: toor
             redis_host: 172.17.0.3
         ```
 
     3. Composer install
 
         ```yml
-        $ docker exec -ti $(docker ps -f name=php -q) sh -c  "cd /var/www/symfony/ && composer install"
+        $ docker exec -ti $(docker ps -f name=php -q) sh -c  "cd /var/www/laravel/ && composer install"
         ```
 
 6. Enjoy :-)
 
 ## Using
 
-* Symfony app: visit [symfony.dev](http://symfony.dev)  
-* Symfony dev mode: visit [symfony.dev/app_dev.php](http://symfony.dev/app_dev.php)  
-* Logs (Kibana): [symfony.dev:81](http://symfony.dev:81)
-* Logs (files location): logs/nginx and logs/symfony
+* Laravel app: visit [app.dev](http://app.dev)  
+* Logs (Kibana): [app.dev:81](http://app.dev:81)
+* Logs (files location): logs/nginx and logs/laravel
 
 ## How it works?
 
 Have a look at the `docker-compose.yml` file, here are the `docker-compose` built images:
 
-* `application`: This is the Symfony application code container,
+* `application`: This is the Laravel or Lumen application code container,
 * `db`: This is the MySQL database container,
 * `php`: This is the PHP-FPM container in which the application volume is mounted,
 * `nginx`: This is the Nginx webserver container in which application volume is mounted too,
@@ -82,22 +81,22 @@ This results in the following running containers:
 $ docker-compose ps
            Name                          Command               State              Ports            
 --------------------------------------------------------------------------------------------------
-dockersymfony_application_1   /bin/bash                        Up                                  
-dockersymfony_db_1            /entrypoint.sh mysqld            Up      0.0.0.0:3306->3306/tcp      
-dockersymfony_elk_1           /usr/bin/supervisord -n -c ...   Up      0.0.0.0:81->80/tcp          
-dockersymfony_nginx_1         nginx                            Up      443/tcp, 0.0.0.0:80->80/tcp
-dockersymfony_php_1           php-fpm                          Up      0.0.0.0:9000->9000/tcp      
-dockersymfony_redis_1         /entrypoint.sh redis-server      Up      0.0.0.0:6379->6379/tcp      
+dockerlaravel_application_1   /bin/bash                        Up                                  
+dockerlaravel_db_1            /entrypoint.sh mysqld            Up      0.0.0.0:3306->3306/tcp      
+dockerlaravel_elk_1           /usr/bin/supervisord -n -c ...   Up      0.0.0.0:81->80/tcp          
+dockerlaravel_nginx_1         nginx                            Up      443/tcp, 0.0.0.0:80->80/tcp
+dockerlaravel_php_1           php-fpm                          Up      0.0.0.0:9000->9000/tcp      
+dockerlaravel_redis_1         /entrypoint.sh redis-server      Up      0.0.0.0:6379->6379/tcp      
 ```
 
 ## Useful commands
 
 ```bash
 # Composer (e.g. composer update)
-$ docker exec -ti $(docker ps -f name=php -q) sh -c  "cd /var/www/symfony/ && composer update"
+$ docker exec -ti $(docker ps -f name=php -q) sh -c  "cd /var/www/laravel/ && composer update"
 
 # SF commands
-$ docker exec -ti $(docker ps -f name=php -q) php /var/www/symfony/app/console cache:clear
+$ docker exec -ti $(docker ps -f name=php -q) php /var/www/laravel/app/console cache:clear
 
 # bash commands
 $ docker exec -ti $(docker ps -f name=php -q) /bin/bash
@@ -109,7 +108,7 @@ $ docker exec -ti $(docker ps -f name=db -q) mysql -uroot -p"root"
 $ docker exec -ti $(docker ps -f name=redis -q) sh -c 'exec redis-cli'
 
 # F***ing cache/logs folder
-$ sudo chmod -R 777 symfony/app/cache symfony/app/logs
+$ sudo chmod -R 777 app/storage/cache app/storage/logs
 
 # Check CPU consumption
 $ docker stats $(docker inspect -f "{{ .Name }}" $(docker ps -q))
@@ -121,13 +120,6 @@ $ docker rm $(docker ps -a -q)
 $ docker rmi $(docker images -q)
 ```
 
-## FAQ
-
-* Got this error: `ERROR: Couldn't connect to Docker daemon at http+docker://localunixsocket - is it running?
-If it's at a non-standard location, specify the URL with the DOCKER_HOST environment variable.` ?  
-Run `docker-compose up -d` instead.
-
-* Permission problem? See [this doc (Setting up Permission)](http://symfony.com/doc/current/book/installation.html#checking-symfony-application-configuration-and-setup)
 
 ## TODO
 
