@@ -1,12 +1,16 @@
-# Docker Laravel (PHP7-FPM - NGINX - MySQL - ELK - REDIS)
+# Docker Laravel (LEMP stack with PHP7, ELK, REDIS)
 
 [![Build Status](https://travis-ci.org/purinda/docker-laravel.svg?branch=master)](https://travis-ci.org/purinda/docker-laravel)
 
-*Credit: this is a kind of fork from [maxpou/docker-symfony](https://github.com/maxpou/docker-symfony). Thanks to him :-)*
+*Credit: this is a kind of fork from [maxpou/docker-symfony](https://github.com/maxpou/docker-symfony). Thanks to him :-)* 
+I have made the number of changes to work with Laravel or Lumen apps and modified platform level commands (`artisan`, `composer`, `mysql`) quite easy to access.
 
 ![Container Architecture](https://raw.githubusercontent.com/purinda/docker-laravel/master/docs/container-architecture.png)
 
 ## Installation
+
+I assume you have `docker-compose` installed and either **docker-engine** running locally (Linux) or have **docker-machine** (OSX, Windows) 
+configured on the computer you use.
 
 1. Retrieve git project
 
@@ -18,26 +22,25 @@
 
 3. Symlink your Laravel/Lumen project into app folder (`ln -s <absolute-path-of-laravel-project> app`)
 
-4. Build containers with (with and without detached mode)
+4. Build and start containers in detached mode.
 
     ```bash
-    $ docker-compose up
     $ docker-compose up -d
     ```
 
-5. Update your host file (add app.dev)
+5. Update your host file (add `app.dev`)
 
     ```bash
     # get containers IP address and update host (replace IP according to your configuration )
     $ docker inspect --format '{{ .NetworkSettings.IPAddress }}' $(docker ps -f name=nginx -q)
-    $ sudo echo "171.17.0.1 app.dev" >> /etc/hosts
+    $ sudo echo "10.211.55.7 app.dev" >> /etc/hosts
     ```
 
-    If you use `docker-machine` then run the following to get IP address of the vm. 
+    If you use `docker-machine` (mainly OSX or Windows) then run the following to get IP address of the vm. 
 
     ```bash
     $ docker-machine ip <machine-name> 
-    $ sudo echo "171.17.0.1 app.dev" >> /etc/hosts
+    $ sudo echo "10.211.55.7 app.dev" >> /etc/hosts
     ```
 
 
@@ -62,7 +65,7 @@
 
 7. Enjoy :-)
 
-## Using
+## How to use
 
 * Laravel app: visit [app.dev](http://app.dev)  
 * Logs (Kibana): [app.dev:81](http://app.dev:81)
@@ -83,51 +86,35 @@ This results in the following running containers:
 
 ```bash
 $ docker-compose ps
-           Name                          Command               State              Ports            
+           Name                          Command               State              Ports
 --------------------------------------------------------------------------------------------------
-dockerlaravel_application_1   /bin/bash                        Up                                  
-dockerlaravel_db_1            /entrypoint.sh mysqld            Up      0.0.0.0:3306->3306/tcp      
-dockerlaravel_elk_1           /usr/bin/supervisord -n -c ...   Up      0.0.0.0:81->80/tcp          
+dockerlaravel_application_1   /bin/bash                        Up
+dockerlaravel_db_1            docker-entrypoint.sh mysqld      Up      0.0.0.0:3306->3306/tcp
+dockerlaravel_elk_1           /usr/bin/supervisord -n -c ...   Up      0.0.0.0:81->80/tcp
 dockerlaravel_nginx_1         nginx                            Up      443/tcp, 0.0.0.0:80->80/tcp
-dockerlaravel_php_1           php-fpm                          Up      0.0.0.0:9000->9000/tcp      
-dockerlaravel_redis_1         /entrypoint.sh redis-server      Up      0.0.0.0:6379->6379/tcp      
+dockerlaravel_php_1           php-fpm                          Up      9000/tcp
+dockerlaravel_redis_1         docker-entrypoint.sh redis ...   Up      0.0.0.0:6379->6379/tcp   
 ```
 
 ## Useful commands
 
 ```bash
 # Composer (e.g. composer update)
-$ docker exec -ti $(docker ps -f name=php -q) sh -c  "cd /var/www/laravel/ && composer update"
+$ docker-compose exec php composer update
 
-# SF commands
-$ docker exec -ti $(docker ps -f name=php -q) php /var/www/laravel/app/console cache:clear
+# Laravel Artisan commands
+$ docker-compose exec php ./artisan
 
 # bash commands
-$ docker exec -ti $(docker ps -f name=php -q) /bin/bash
+$ docker-compose exec php /bin/bash
 
 # MySQL commands
-$ docker exec -ti $(docker ps -f name=db -q) mysql -uroot -p"root"
+$ docker-compose exec db mysql -uroot -p"toor" laravel
 
 # Redis commands
-$ docker exec -ti $(docker ps -f name=redis -q) sh -c 'exec redis-cli'
+$ docker-compose exec redis redis-cli
 
-# F***ing cache/logs folder
-$ sudo chmod -R 777 app/storage/cache app/storage/logs
+# Cache/logs folder permissions (use open permissions for development only)
+$ chmod -R 777 app/storage/cache app/storage/logs
 
-# Check CPU consumption
-$ docker stats $(docker inspect -f "{{ .Name }}" $(docker ps -q))
-
-# Delete all containers
-$ docker rm $(docker ps -a -q)
-
-# Delete all images
-$ docker rmi $(docker images -q)
 ```
-
-
-## TODO
-
-- [ ] Upgrade ELK stack. Install [Timelion](https://github.com/elastic/timelion) <3
-- [ ] MySQL -> PostgreSQL
-- [ ] Move SF app folder?
-- [ ] use php7-fpm/php.ini
