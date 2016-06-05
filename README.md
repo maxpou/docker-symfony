@@ -104,7 +104,7 @@ dockerlaravel_redis_1         docker-entrypoint.sh redis ...   Up      0.0.0.0:6
 # Composer (e.g. composer update)
 $ docker-compose exec php composer update
 
-# Laravel Artisan commands
+# Laravel Artisan commands (make sure `artisan` script in the app has executable permissions bit set)
 $ docker-compose exec php ./artisan
 
 # bash commands
