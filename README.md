@@ -2,6 +2,8 @@
 
 [![Build Status](https://travis-ci.org/purinda/docker-laravel.svg?branch=master)](https://travis-ci.org/purinda/docker-laravel)
 
+**The idea of the project is to provide a pre-configured docker platform for Laravel and Lumen apps to get them up and running fast.**
+
 *Credit: this is a kind of fork from [maxpou/docker-symfony](https://github.com/maxpou/docker-symfony). Thanks to him :-)* 
 I have made the number of changes to work with Laravel or Lumen apps and modified platform level commands (`artisan`, `composer`, `mysql`) quite easy to access.
 
