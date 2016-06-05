@@ -19,6 +19,9 @@ redis:
       - 6379:6379
 php:
     build: php7-fpm
+    environment:
+        MYSQL_ROOT_PASSWORD: toor
+        MYSQL_DATABASE: laravel
     volumes_from:
         - application
     links:
