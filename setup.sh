@@ -1,6 +1,11 @@
 #!/usr/bin/env bash
 set -eo pipefail
 
+#
+# Following condition determines the behaviour of the script.
+# - If NOT within the container, script copies itself to the container
+# - If within the container, script runs the commands
+#
 if [ -z "$MARIADB_MAJOR" ]; then
     # Copy the setup command to the database container and run
     DB_CONTAINER=$(docker-compose ps | grep db | cut -d " " -f1)
