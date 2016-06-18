@@ -120,3 +120,21 @@ $ docker-compose exec redis redis-cli
 $ chmod -R 777 app/storage/cache app/storage/logs
 
 ```
+
+## Running PHPUnit
+
+In order to run the application test suite, it is required to run `phpunit` which runs against the test database of the 
+application layer.
+
+The script `setup-phpunit.sh` sets up the test database in the `db` container and grants required permission for the application
+test suite.
+
+Script needs docker-machine environment variables (`docker-machine env <machine-name>`) to be set if you are running 
+containers on `docker-machine`. run the script on `docker-laravel` project directory as below. The script will copy itself into
+the db container and set up the required configuration.
+    
+    ./setup-phpunit.sh
+    
+Lastly, run the unit test suit
+
+    docker-compose exec php php vendor/bin/phpunit

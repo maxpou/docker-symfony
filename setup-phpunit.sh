@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 set -eo pipefail
+SCRIPT=`basename "$0"`
 
 #
 # Following condition determines the behaviour of the script.
@@ -9,8 +10,8 @@ set -eo pipefail
 if [ -z "$MARIADB_MAJOR" ]; then
     # Copy the setup command to the database container and run
     DB_CONTAINER=$(docker-compose ps | grep db | cut -d " " -f1)
-    docker cp setup.sh "$DB_CONTAINER:/"
-    docker-compose exec db bash setup.sh
+    docker cp $SCRIPT "$DB_CONTAINER:/"
+    docker-compose exec db bash $SCRIPT
 
     echo Laravel db setup installed and ran successfully
 else
