@@ -5,14 +5,15 @@ application:
         - ./logs/laravel:/var/www/laravel/storage/logs
     tty: true
 db:
-    image: mariadb:latest
+    build: mariadb
     environment:
         MYSQL_ROOT_PASSWORD: toor
         MYSQL_DATABASE: laravel
+        TEST_DB_NAME: laravel_test
         MYSQL_USER: laravel
         MYSQL_PASSWORD: laravel
     ports:
-        - 3306:3306
+        - 3306:3307
 redis:
   image: redis:alpine
   ports:
@@ -22,6 +23,7 @@ php:
     environment:
         MYSQL_ROOT_PASSWORD: toor
         MYSQL_DATABASE: laravel
+        TEST_DB_NAME: laravel_test
     volumes_from:
         - application
     links:
