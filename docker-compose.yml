@@ -1,26 +1,25 @@
 application:
     build: code
     volumes:
-        - ./symfony:/var/www/symfony
-        - ./logs/symfony:/var/www/symfony/app/logs
+        - ./app:/var/www/laravel
+        - ./logs/laravel:/var/www/laravel/storage/logs
     tty: true
 db:
-    image: mysql
+    image: mariadb:latest
+    environment:
+        MYSQL_ROOT_PASSWORD: toor
+        MYSQL_DATABASE: laravel
+        TEST_DB_NAME: laravel_test
+        MYSQL_USER: laravel
+        MYSQL_PASSWORD: laravel
     ports:
         - 3306:3306
-    environment:
-        MYSQL_ROOT_PASSWORD: root
-        MYSQL_DATABASE: symfony
-        MYSQL_USER: user
-        MYSQL_PASSWORD: root
 redis:
   image: redis:alpine
   ports:
       - 6379:6379
 php:
     build: php7-fpm
-    ports:
-        - 9000:9000
     volumes_from:
         - application
     links:
@@ -28,18 +27,16 @@ php:
         - redis
 nginx:
     build: nginx
-    ports:
-        - 80:80
     links:
         - php
     volumes_from:
         - application
     volumes:
         - ./logs/nginx/:/var/log/nginx
+    ports:
+        - 80:80
 elk:
     image: willdurand/elk
-    ports:
-        - 81:80
     volumes:
         - ./elk/logstash:/etc/logstash
         - ./elk/logstash/patterns:/opt/logstash/patterns
@@ -47,3 +44,5 @@ elk:
         - application
         - php
         - nginx
+    ports:
+        - 81:80
