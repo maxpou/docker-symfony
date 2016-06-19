@@ -11,7 +11,7 @@ I have made the number of changes to work with Laravel or Lumen apps and modifie
 
 ## Installation
 
-I assume you have `docker-compose` installed and either **docker-engine** running locally (Linux) or have **docker-machine** (OSX, Windows) 
+I assume you have `docker-compose` installed and either **docker-engine** running locally (Linux) or have **docker-machine** (installed via [docker-toolbox](https://www.docker.com/products/docker-toolbox) on OSX, Windows) 
 configured on the computer you use.
 
 1. Retrieve git project
