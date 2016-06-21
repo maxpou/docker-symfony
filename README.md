@@ -11,7 +11,7 @@
 1. Retrieve git project
 
     ```bash
-    $ git clone git@github.com:maxpou/docker-symfony.git
+    $ git clone https://github.com/maxpou/docker-symfony
     ```
 
 2. Move your Symfony project into symfony folder
@@ -42,12 +42,12 @@
 
         ```yml
         parameters:
+            redis_host: 172.17.0.3
             database_host: 172.17.0.4
             database_port: null
             database_name: symfony
             database_user: root
             database_password: root
-            redis_host: 172.17.0.3
         ```
 
     3. Composer install
@@ -98,18 +98,22 @@ $ docker exec -ti $(docker ps -f name=php -q) sh -c  "cd /var/www/symfony/ && co
 
 # SF commands
 $ docker exec -ti $(docker ps -f name=php -q) php /var/www/symfony/app/console cache:clear
+$ docker-compose exec php php /var/www/symfony/app/console cache:clear
 
 # bash commands
+$ docker-compose exec php bash
 $ docker exec -ti $(docker ps -f name=php -q) /bin/bash
 
 # MySQL commands
+$ docker-compose exec db mysql -uroot -p"root"
 $ docker exec -ti $(docker ps -f name=db -q) mysql -uroot -p"root"
 
 # Redis commands
+$ docker-compose exec redis redis-cli
 $ docker exec -ti $(docker ps -f name=redis -q) sh -c 'exec redis-cli'
 
 # F***ing cache/logs folder
-$ sudo chmod -R 777 symfony/app/cache symfony/app/logs
+$ sudo chmod -R 777 app/cache app/logs
 
 # Check CPU consumption
 $ docker stats $(docker inspect -f "{{ .Name }}" $(docker ps -q))
@@ -129,9 +133,36 @@ Run `docker-compose up -d` instead.
 
 * Permission problem? See [this doc (Setting up Permission)](http://symfony.com/doc/current/book/installation.html#checking-symfony-application-configuration-and-setup)
 
+* How I can add PHPMyAdmin?  
+Simply add this: (then go to [symfony.dev:8080](http://symfony.dev:8080))
+
+    ```
+    phpmyadmin:
+       image: corbinu/docker-phpmyadmin
+       ports :
+        - "8080:80"
+       environment:
+        - MYSQL_USERNAME=root
+        - MYSQL_PASSWORD=root
+       links:
+        - db:mysql
+    ```
+
 ## TODO
 
-- [ ] Upgrade ELK stack. Install [Timelion](https://github.com/elastic/timelion) <3
-- [ ] MySQL -> PostgreSQL
-- [ ] Move SF app folder?
-- [ ] use php7-fpm/php.ini
+- [ ] Add DNS! (and avoid retrieving ip)
+- [ ]
+- [ ] Remove SF app container!
+- [ ] Update diagram:
+    * indicate ES/Kibana ports
+    * remove code container
+- [ ] SF app parameters: fix misconfiguration (use environment variable instead)
+
+    ```
+    database_port: null
+    database_name: symfony
+    database_user: root
+    database_password: root
+    ```
+
+- [ ] Upgrade ELK stack + install [Timelion](https://github.com/elastic/timelion) plugin <3
