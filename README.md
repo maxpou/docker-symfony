@@ -38,6 +38,8 @@
         $ docker inspect --format '{{ .NetworkSettings.IPAddress }}' $(docker ps -f name=redis -q)
         ```
 
+        **Note:** If it's empty, run `docker inspect $(docker ps -f name=db -q) | grep IPAddress` instead.
+
     2. Update app/paraeters.yml (adapt hosts according to previous results)
 
         ```yml
@@ -50,10 +52,13 @@
             database_password: root
         ```
 
-    3. Composer install
+    3. Composer install & create database
 
         ```yml
-        $ docker exec -ti $(docker ps -f name=php -q) sh -c  "cd /var/www/symfony/ && composer install"
+        $ docker-compose exec php composer install
+        $ sf doctrine:database:createsf doctrine:database:create
+        $ sf doctrine:schema:update --force
+        $ sf doctrine:fixtures:load --no-interaction
         ```
 
 6. Enjoy :-)
@@ -93,24 +98,23 @@ dockersymfony_redis_1         /entrypoint.sh redis-server      Up      0.0.0.0:6
 ## Useful commands
 
 ```bash
-# Composer (e.g. composer update)
-$ docker exec -ti $(docker ps -f name=php -q) sh -c  "cd /var/www/symfony/ && composer update"
-
-# SF commands
-$ docker exec -ti $(docker ps -f name=php -q) php /var/www/symfony/app/console cache:clear
-$ docker-compose exec php php /var/www/symfony/app/console cache:clear
-
 # bash commands
 $ docker-compose exec php bash
-$ docker exec -ti $(docker ps -f name=php -q) /bin/bash
+
+# Composer (e.g. composer update)
+$ docker-compose exec php composer update
+
+# SF commands (Tips: there is an alias inside php container)
+$ docker-compose exec php php /var/www/symfony/app/console cache:clear
+# Same command by using alias
+$ docker-compose exec php bash
+$ sf cache:clear
 
 # MySQL commands
 $ docker-compose exec db mysql -uroot -p"root"
-$ docker exec -ti $(docker ps -f name=db -q) mysql -uroot -p"root"
 
 # Redis commands
 $ docker-compose exec redis redis-cli
-$ docker exec -ti $(docker ps -f name=redis -q) sh -c 'exec redis-cli'
 
 # F***ing cache/logs folder
 $ sudo chmod -R 777 app/cache app/logs
@@ -119,7 +123,7 @@ $ sudo chmod -R 777 app/cache app/logs
 $ docker stats $(docker inspect -f "{{ .Name }}" $(docker ps -q))
 
 # Delete all containers
-$ docker rm $(docker ps -a -q)
+$ docker rm $(docker ps -aq)
 
 # Delete all images
 $ docker rmi $(docker images -q)
@@ -150,8 +154,7 @@ Simply add this: (then go to [symfony.dev:8080](http://symfony.dev:8080))
 
 ## TODO
 
-- [ ] Add DNS! (and avoid retrieving ip)
-- [ ]
+- [ ] Add DNS/use network! (and avoid retrieving ip each time)
 - [ ] Remove SF app container!
 - [ ] Update diagram:
     * indicate ES/Kibana ports
@@ -166,3 +169,4 @@ Simply add this: (then go to [symfony.dev:8080](http://symfony.dev:8080))
     ```
 
 - [ ] Upgrade ELK stack + install [Timelion](https://github.com/elastic/timelion) plugin <3
+- [ ] Remove links (deprecated)

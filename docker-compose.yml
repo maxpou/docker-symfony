@@ -13,13 +13,10 @@ services:
             - 3306:3306
         environment:
             MYSQL_ROOT_PASSWORD: root
-            MYSQL_DATABASE: symfony
-            MYSQL_USER: user
-            MYSQL_PASSWORD: root
     redis:
-      image: redis:alpine
-      ports:
-          - 6379:6379
+        image: redis:alpine
+        ports:
+            - 6379:6379
     php:
         build: php7-fpm
         ports:
