@@ -40,16 +40,13 @@
 
         **Note:** If it's empty, run `docker inspect $(docker ps -f name=db -q) | grep IPAddress` instead.
 
-    2. Update app/paraeters.yml (adapt hosts according to previous results)
+    2. Update app/config/parameters.yml (adapt hosts according to previous results)
 
         ```yml
+        # path/to/sfApp/app/config/parameters.yml
         parameters:
-            redis_host: 172.17.0.3
-            database_host: 172.17.0.4
-            database_port: null
-            database_name: symfony
-            database_user: root
-            database_password: root
+            redis_host: redis
+            database_host: mysqldb
         ```
 
     3. Composer install & create database
@@ -153,8 +150,6 @@ Simply add this: (then go to [symfony.dev:8080](http://symfony.dev:8080))
 
 ## TODO
 
-- [ ] Add DNS/use network! (and avoid retrieving ip each time)
-- [x] Remove SF app container!
 - [ ] Update diagram:
     * indicate ES/Kibana ports
     * remove code container
