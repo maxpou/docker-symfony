@@ -54,9 +54,10 @@
 
     3. Composer install & create database
 
-        ```yml
-        $ docker-compose exec php composer install
-        $ sf doctrine:database:createsf doctrine:database:create
+        ```bash
+        $ docker-compose exec php bash
+        $ composer install
+        $ sf doctrine:database:create
         $ sf doctrine:schema:update --force
         $ sf doctrine:fixtures:load --no-interaction
         ```
@@ -74,7 +75,6 @@
 
 Have a look at the `docker-compose.yml` file, here are the `docker-compose` built images:
 
-* `application`: This is the Symfony application code container,
 * `db`: This is the MySQL database container,
 * `php`: This is the PHP-FPM container in which the application volume is mounted,
 * `nginx`: This is the Nginx webserver container in which application volume is mounted too,
@@ -87,7 +87,6 @@ This results in the following running containers:
 $ docker-compose ps
            Name                          Command               State              Ports            
 --------------------------------------------------------------------------------------------------
-dockersymfony_application_1   /bin/bash                        Up                                  
 dockersymfony_db_1            /entrypoint.sh mysqld            Up      0.0.0.0:3306->3306/tcp      
 dockersymfony_elk_1           /usr/bin/supervisord -n -c ...   Up      0.0.0.0:81->80/tcp          
 dockersymfony_nginx_1         nginx                            Up      443/tcp, 0.0.0.0:80->80/tcp
@@ -155,7 +154,7 @@ Simply add this: (then go to [symfony.dev:8080](http://symfony.dev:8080))
 ## TODO
 
 - [ ] Add DNS/use network! (and avoid retrieving ip each time)
-- [ ] Remove SF app container!
+- [x] Remove SF app container!
 - [ ] Update diagram:
     * indicate ES/Kibana ports
     * remove code container
@@ -163,7 +162,6 @@ Simply add this: (then go to [symfony.dev:8080](http://symfony.dev:8080))
 
     ```
     database_port: null
-    database_name: symfony
     database_user: root
     database_password: root
     ```

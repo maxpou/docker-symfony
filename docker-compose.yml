@@ -1,12 +1,6 @@
 version: '2'
 
 services:
-    application:
-        build: code
-        volumes:
-            - ../../sites/lab/symfony-rest-beer-edition:/var/www/symfony
-            - ./logs/symfony:/var/www/symfony/app/logs
-        tty: true
     db:
         image: mysql
         ports:
@@ -21,11 +15,12 @@ services:
         build: php7-fpm
         ports:
             - 9000:9000
-        volumes_from:
-            - application
         links:
             - db
             - redis
+        volumes:
+            - ../../sites/lab/symfony-rest-beer-edition:/var/www/symfony
+            - ./logs/symfony:/var/www/symfony/app/logs
     nginx:
         build: nginx
         ports:
@@ -33,7 +28,7 @@ services:
         links:
             - php
         volumes_from:
-            - application
+            - php
         volumes:
             - ./logs/nginx/:/var/log/nginx
     elk:
@@ -44,15 +39,5 @@ services:
             - ./elk/logstash:/etc/logstash
             - ./elk/logstash/patterns:/opt/logstash/patterns
         volumes_from:
-            - application
             - php
             - nginx
-    phpmyadmin:
-        image: corbinu/docker-phpmyadmin
-        ports :
-            - "8080:80"
-        environment:
-            - MYSQL_USERNAME=root
-            - MYSQL_PASSWORD=root
-        links:
-            - db
