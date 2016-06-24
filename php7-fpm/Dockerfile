@@ -3,8 +3,7 @@ FROM php:7.0-fpm
 
 MAINTAINER Maxence POUTORD <maxence.poutord@gmail.com>
 
-RUN \
-    apt-get update && apt-get install -y \
+RUN apt-get update && apt-get install -y \
     git \
     unzip
 

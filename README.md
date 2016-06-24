@@ -148,18 +148,17 @@ Simply add this: (then go to [symfony.dev:8080](http://symfony.dev:8080))
         - db:mysql
     ```
 
+
+## Contributing
+
+First of all, **thank you** for contributing ♥  
+If you find any typo/misconfiguration/... please send me a PR or open an issue. You can also ping me on [twitter](https://twitter.com/_maxpou).  
+Also, while creating your Pull Request on GitHub, please write a description which gives the context and/or explains why you are creating it.
+
+
 ## TODO
 
 - [ ] Update diagram:
     * indicate ES/Kibana ports
     * remove code container
-- [ ] SF app parameters: fix misconfiguration (use environment variable instead)
-
-    ```
-    database_port: null
-    database_user: root
-    database_password: root
-    ```
-
 - [ ] Upgrade ELK stack + install [Timelion](https://github.com/elastic/timelion) plugin <3
-- [ ] Remove links (deprecated)
