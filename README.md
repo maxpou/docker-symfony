@@ -2,9 +2,7 @@
 
 [![Build Status](https://travis-ci.org/maxpou/docker-symfony.svg?branch=master)](https://travis-ci.org/maxpou/docker-symfony)
 
-*Credit: this is a kind of fork from [eko/docker-symfony](https://github.com/eko/docker-symfony). Thanks to him :-)*
-
-![](http://www.maxpou.fr/images/articles/symfony-docker/schema.png)
+![](http://www.maxpou.fr/images/articles/symfony-docker/schema-v2.png)
 
 ## Installation
 
@@ -14,7 +12,15 @@
     $ git clone https://github.com/maxpou/docker-symfony
     ```
 
-2. Move your Symfony project into symfony folder
+2. In the docker-compose file, indicate where's your Symfony project
+
+    ```yml
+    services:
+        php:
+            volumes:
+                - path/to/your/symfony-project:/var/www/symfony
+    ```
+
 3. Build containers with (with and without detached mode)
 
     ```bash
@@ -40,7 +46,7 @@
 
         **Note:** If it's empty, run `docker inspect $(docker ps -f name=db -q) | grep IPAddress` instead.
 
-    2. Update app/config/parameters.yml (adapt hosts according to previous results)
+    2. Update app/config/parameters.yml
 
         ```yml
         # path/to/sfApp/app/config/parameters.yml
@@ -158,7 +164,4 @@ Also, while creating your Pull Request on GitHub, please write a description whi
 
 ## TODO
 
-- [ ] Update diagram:
-    * indicate ES/Kibana ports
-    * remove code container
 - [ ] Upgrade ELK stack + install [Timelion](https://github.com/elastic/timelion) plugin <3
