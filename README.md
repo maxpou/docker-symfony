@@ -4,6 +4,8 @@
 
 ![](http://www.maxpou.fr/images/articles/symfony-docker/schema-v2.png)
 
+Docker-symfony gives you everything you need for developing Symfony application. This complete stack run with docker and [docker-compose](https://docs.docker.com/compose/).
+
 ## Installation
 
 1. Retrieve git project
@@ -33,8 +35,11 @@
     ```bash
     # get containers IP address and update host (replace IP according to your configuration)
     $ docker inspect --format '{{ .NetworkSettings.IPAddress }}' $(docker ps -f name=nginx -q)
+    # unix only (on Windows, edit C:\Windows\System32\drivers\etc\hosts)
     $ sudo echo "171.17.0.1 symfony.dev" >> /etc/hosts
     ```
+
+    **Note:** If it's empty, run `docker inspect $(docker ps -f name=nginx -q) | grep IPAddress` instead.
 
 5. Prepare Symfony app
     1. Retrieve DB&Redis IP
@@ -67,7 +72,9 @@
 
 6. Enjoy :-)
 
-## Using
+## Usage
+
+Just run `docker-compose -d`, then:
 
 * Symfony app: visit [symfony.dev](http://symfony.dev)  
 * Symfony dev mode: visit [symfony.dev/app_dev.php](http://symfony.dev/app_dev.php)  
