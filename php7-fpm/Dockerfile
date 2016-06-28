@@ -3,9 +3,7 @@ FROM php:7.0-fpm
 
 MAINTAINER Maxence POUTORD <maxence.poutord@gmail.com>
 
-
-RUN \
-    apt-get update && apt-get install -y \
+RUN apt-get update && apt-get install -y \
     git \
     unzip
 
@@ -20,3 +18,7 @@ RUN "date"
 
 # Type docker-php-ext-install to see available extensions
 RUN docker-php-ext-install pdo pdo_mysql
+
+RUN echo 'alias sf="php app/console"' >> ~/.bashrc
+
+WORKDIR /var/www/symfony

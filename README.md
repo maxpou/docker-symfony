@@ -2,19 +2,27 @@
 
 [![Build Status](https://travis-ci.org/maxpou/docker-symfony.svg?branch=master)](https://travis-ci.org/maxpou/docker-symfony)
 
-*Credit: this is a kind of fork from [eko/docker-symfony](https://github.com/eko/docker-symfony). Thanks to him :-)*
+![](http://www.maxpou.fr/images/articles/symfony-docker/schema-v2.png)
 
-![](http://www.maxpou.fr/images/articles/symfony-docker/schema.png)
+Docker-symfony gives you everything you need for developing Symfony application. This complete stack run with docker and [docker-compose](https://docs.docker.com/compose/).
 
 ## Installation
 
 1. Retrieve git project
 
     ```bash
-    $ git clone git@github.com:maxpou/docker-symfony.git
+    $ git clone https://github.com/maxpou/docker-symfony
     ```
 
-2. Move your Symfony project into symfony folder
+2. In the docker-compose file, indicate where's your Symfony project
+
+    ```yml
+    services:
+        php:
+            volumes:
+                - path/to/your/symfony-project:/var/www/symfony
+    ```
+
 3. Build containers with (with and without detached mode)
 
     ```bash
@@ -27,8 +35,11 @@
     ```bash
     # get containers IP address and update host (replace IP according to your configuration)
     $ docker inspect --format '{{ .NetworkSettings.IPAddress }}' $(docker ps -f name=nginx -q)
+    # unix only (on Windows, edit C:\Windows\System32\drivers\etc\hosts)
     $ sudo echo "171.17.0.1 symfony.dev" >> /etc/hosts
     ```
+
+    **Note:** If it's empty, run `docker inspect $(docker ps -f name=nginx -q) | grep IPAddress` instead.
 
 5. Prepare Symfony app
     1. Retrieve DB&Redis IP
@@ -38,27 +49,32 @@
         $ docker inspect --format '{{ .NetworkSettings.IPAddress }}' $(docker ps -f name=redis -q)
         ```
 
-    2. Update app/paraeters.yml (adapt hosts according to previous results)
+        **Note:** If it's empty, run `docker inspect $(docker ps -f name=db -q) | grep IPAddress` instead.
+
+    2. Update app/config/parameters.yml
 
         ```yml
+        # path/to/sfApp/app/config/parameters.yml
         parameters:
-            database_host: 172.17.0.4
-            database_port: null
-            database_name: symfony
-            database_user: root
-            database_password: root
-            redis_host: 172.17.0.3
+            redis_host: redis
+            database_host: mysqldb
         ```
 
-    3. Composer install
+    3. Composer install & create database
 
-        ```yml
-        $ docker exec -ti $(docker ps -f name=php -q) sh -c  "cd /var/www/symfony/ && composer install"
+        ```bash
+        $ docker-compose exec php bash
+        $ composer install
+        $ sf doctrine:database:create
+        $ sf doctrine:schema:update --force
+        $ sf doctrine:fixtures:load --no-interaction
         ```
 
 6. Enjoy :-)
 
-## Using
+## Usage
+
+Just run `docker-compose -d`, then:
 
 * Symfony app: visit [symfony.dev](http://symfony.dev)  
 * Symfony dev mode: visit [symfony.dev/app_dev.php](http://symfony.dev/app_dev.php)  
@@ -69,7 +85,6 @@
 
 Have a look at the `docker-compose.yml` file, here are the `docker-compose` built images:
 
-* `application`: This is the Symfony application code container,
 * `db`: This is the MySQL database container,
 * `php`: This is the PHP-FPM container in which the application volume is mounted,
 * `nginx`: This is the Nginx webserver container in which application volume is mounted too,
@@ -82,7 +97,6 @@ This results in the following running containers:
 $ docker-compose ps
            Name                          Command               State              Ports            
 --------------------------------------------------------------------------------------------------
-dockersymfony_application_1   /bin/bash                        Up                                  
 dockersymfony_db_1            /entrypoint.sh mysqld            Up      0.0.0.0:3306->3306/tcp      
 dockersymfony_elk_1           /usr/bin/supervisord -n -c ...   Up      0.0.0.0:81->80/tcp          
 dockersymfony_nginx_1         nginx                            Up      443/tcp, 0.0.0.0:80->80/tcp
@@ -93,29 +107,32 @@ dockersymfony_redis_1         /entrypoint.sh redis-server      Up      0.0.0.0:6
 ## Useful commands
 
 ```bash
-# Composer (e.g. composer update)
-$ docker exec -ti $(docker ps -f name=php -q) sh -c  "cd /var/www/symfony/ && composer update"
-
-# SF commands
-$ docker exec -ti $(docker ps -f name=php -q) php /var/www/symfony/app/console cache:clear
-
 # bash commands
-$ docker exec -ti $(docker ps -f name=php -q) /bin/bash
+$ docker-compose exec php bash
+
+# Composer (e.g. composer update)
+$ docker-compose exec php composer update
+
+# SF commands (Tips: there is an alias inside php container)
+$ docker-compose exec php php /var/www/symfony/app/console cache:clear
+# Same command by using alias
+$ docker-compose exec php bash
+$ sf cache:clear
 
 # MySQL commands
-$ docker exec -ti $(docker ps -f name=db -q) mysql -uroot -p"root"
+$ docker-compose exec db mysql -uroot -p"root"
 
 # Redis commands
-$ docker exec -ti $(docker ps -f name=redis -q) sh -c 'exec redis-cli'
+$ docker-compose exec redis redis-cli
 
 # F***ing cache/logs folder
-$ sudo chmod -R 777 symfony/app/cache symfony/app/logs
+$ sudo chmod -R 777 app/cache app/logs
 
 # Check CPU consumption
 $ docker stats $(docker inspect -f "{{ .Name }}" $(docker ps -q))
 
 # Delete all containers
-$ docker rm $(docker ps -a -q)
+$ docker rm $(docker ps -aq)
 
 # Delete all images
 $ docker rmi $(docker images -q)
@@ -129,9 +146,29 @@ Run `docker-compose up -d` instead.
 
 * Permission problem? See [this doc (Setting up Permission)](http://symfony.com/doc/current/book/installation.html#checking-symfony-application-configuration-and-setup)
 
+* How I can add PHPMyAdmin?  
+Simply add this: (then go to [symfony.dev:8080](http://symfony.dev:8080))
+
+    ```
+    phpmyadmin:
+       image: corbinu/docker-phpmyadmin
+       ports :
+        - "8080:80"
+       environment:
+        - MYSQL_USERNAME=root
+        - MYSQL_PASSWORD=root
+       links:
+        - db:mysql
+    ```
+
+
+## Contributing
+
+First of all, **thank you** for contributing ♥  
+If you find any typo/misconfiguration/... please send me a PR or open an issue. You can also ping me on [twitter](https://twitter.com/_maxpou).  
+Also, while creating your Pull Request on GitHub, please write a description which gives the context and/or explains why you are creating it.
+
+
 ## TODO
 
-- [ ] Upgrade ELK stack. Install [Timelion](https://github.com/elastic/timelion) <3
-- [ ] MySQL -> PostgreSQL
-- [ ] Move SF app folder?
-- [ ] use php7-fpm/php.ini
+- [ ] Upgrade ELK stack + install [Timelion](https://github.com/elastic/timelion) plugin <3
