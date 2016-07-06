@@ -114,7 +114,8 @@ $ docker-compose exec php bash
 $ docker-compose exec php composer update
 
 # SF commands (Tips: there is an alias inside php container)
-$ docker-compose exec php php /var/www/symfony/app/console cache:clear
+$ docker-compose exec php php /var/www/symfony/app/console cache:clear # Symfony2
+$ docker-compose exec php php /var/www/symfony/bin/console cache:clear # Symfony3
 # Same command by using alias
 $ docker-compose exec php bash
 $ sf cache:clear
@@ -126,7 +127,8 @@ $ docker-compose exec db mysql -uroot -p"root"
 $ docker-compose exec redis redis-cli
 
 # F***ing cache/logs folder
-$ sudo chmod -R 777 app/cache app/logs
+$ sudo chmod -R 777 app/cache app/logs # Symfony2
+$ sudo chmod -R 777 var/cache var/logs # Symfony3
 
 # Check CPU consumption
 $ docker stats $(docker inspect -f "{{ .Name }}" $(docker ps -q))
