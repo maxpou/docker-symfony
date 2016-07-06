@@ -20,5 +20,6 @@ RUN "date"
 RUN docker-php-ext-install pdo pdo_mysql
 
 RUN echo 'alias sf="php app/console"' >> ~/.bashrc
+RUN echo 'alias sf3="php bin/console"' >> ~/.bashrc
 
 WORKDIR /var/www/symfony
