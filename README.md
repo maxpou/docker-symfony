@@ -158,14 +158,11 @@ Simply add this: (then go to [symfony.dev:8080](http://symfony.dev:8080))
 
     ```
     phpmyadmin:
-       image: corbinu/docker-phpmyadmin
-       ports :
-        - "8080:80"
-       environment:
-        - MYSQL_USERNAME=root
-        - MYSQL_PASSWORD=root
-       links:
-        - db:mysql
+        image: phpmyadmin/phpmyadmin
+        ports:
+            - "8080:80"
+        links:
+            - db
     ```
 
 
