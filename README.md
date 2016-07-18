@@ -41,8 +41,8 @@ configured on the computer you use.
     If you use `docker-machine` (mainly OSX or Windows) then run the following to get IP address of the vm. 
 
     ```bash
-    $ docker-machine ip <machine-name> 
-    $ sudo echo "10.211.55.7 app.dev" >> /etc/hosts
+    $ docker-machine ip <machine-name>
+    $ echo "10.211.55.7 app.dev" | sudo tee -a /etc/hosts
     ```
 
 
