@@ -4,17 +4,11 @@
 
 ![](http://www.maxpou.fr/images/articles/symfony-docker/schema-v2.png)
 
-Docker-symfony gives you everything you need for developing Symfony application. This complete stack run with docker and [docker-compose](https://docs.docker.com/compose/).
+Docker-symfony gives you everything you need for developing Symfony application. This complete stack run with docker and [docker-compose (1.7 or higher)](https://docs.docker.com/compose/).
 
 ## Installation
 
-1. Retrieve git project
-
-    ```bash
-    $ git clone https://github.com/maxpou/docker-symfony
-    ```
-
-2. In the docker-compose file, indicate where's your Symfony project
+1. In the docker-compose file, indicate where's your Symfony project
 
     ```yml
     services:
@@ -23,14 +17,15 @@ Docker-symfony gives you everything you need for developing Symfony application.
                 - path/to/your/symfony-project:/var/www/symfony
     ```
 
-3. Build containers with (with and without detached mode)
+2. Build/run containers with (with and without detached mode)
 
     ```bash
+    $ docker-compose build
     $ docker-compose up
     $ docker-compose up -d
     ```
 
-4. Update your host file (add symfony.dev)
+3. Update your system host file (add symfony.dev)
 
     ```bash
     # get containers IP address and update host (replace IP according to your configuration)
@@ -41,12 +36,12 @@ Docker-symfony gives you everything you need for developing Symfony application.
 
     **Note:** If it's empty, run `docker inspect $(docker ps -f name=nginx -q) | grep IPAddress` instead.
 
-5. Prepare Symfony app
+4. Prepare Symfony app
     1. Retrieve DB&Redis IP
 
         ```bash
-        $ docker inspect --format '{{ .NetworkSettings.IPAddress }}' $(docker ps -f name=db -q)
-        $ docker inspect --format '{{ .NetworkSettings.IPAddress }}' $(docker ps -f name=redis -q)
+        $ docker inspect --format '{{ .NetworkSettings.Networks.dockersymfony_default.IPAddress }}' $(docker ps -f name=db -q)
+        $ docker inspect --format '{{ .NetworkSettings.Networks.dockersymfony_default.IPAddress }}' $(docker ps -f name=redis -q)
         ```
 
         **Note:** If it's empty, run `docker inspect $(docker ps -f name=db -q) | grep IPAddress` instead.
@@ -54,10 +49,12 @@ Docker-symfony gives you everything you need for developing Symfony application.
     2. Update app/config/parameters.yml
 
         ```yml
-        # path/to/sfApp/app/config/parameters.yml
+        # path/to/your/symfony-project/app/config/parameters.yml
         parameters:
-            redis_host: redis
             database_host: mysqldb
+            database_password: root
+            #...
+            redis_host: redis
         ```
 
     3. Composer install & create database
@@ -75,7 +72,7 @@ Docker-symfony gives you everything you need for developing Symfony application.
         $ sf3 doctrine:fixtures:load --no-interaction
         ```
 
-6. Enjoy :-)
+5. Enjoy :-)
 
 ## Usage
 
@@ -147,24 +144,23 @@ $ docker rmi $(docker images -q)
 
 ## FAQ
 
+* How I can add PHPMyAdmin?  
+Simply add this: (then go to [symfony.dev:8080](http://symfony.dev:8080))
+
+```
+phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    ports:
+        - "8080:80"
+    links:
+        - db
+```
+
 * Got this error: `ERROR: Couldn't connect to Docker daemon at http+docker://localunixsocket - is it running?
 If it's at a non-standard location, specify the URL with the DOCKER_HOST environment variable.` ?  
 Run `docker-compose up -d` instead.
 
 * Permission problem? See [this doc (Setting up Permission)](http://symfony.com/doc/current/book/installation.html#checking-symfony-application-configuration-and-setup)
-
-* How I can add PHPMyAdmin?  
-Simply add this: (then go to [symfony.dev:8080](http://symfony.dev:8080))
-
-    ```
-    phpmyadmin:
-        image: phpmyadmin/phpmyadmin
-        ports:
-            - "8080:80"
-        links:
-            - db
-    ```
-
 
 ## Contributing
 
