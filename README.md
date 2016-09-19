@@ -85,6 +85,109 @@ Just run `docker-compose -d`, then:
 * Logs (files location): logs/nginx and logs/symfony
 * PHPMyAdmin : [symfony.dev:8080](http://symfony.dev:8080)
 
+## Multiple applications running on this stack
+
+If you want to use this docker configuration to run multiple Symfony applications - ex : project{1,2,3} - follow those steps :
+
+* add the needed hosts to your local /etc/hosts
+    
+```bash
+127.0.0.1   localhost project1.sf project2.sf project3.sf
+```
+
+* configure nginx servers within the docker-symfony/nginx/symfony.conf
+
+```bash
+server {
+    server_name project1.sf;
+    root /var/www/symfony_project1/web;
+
+    listen   80;
+    
+    (...)
+    
+}
+
+server {
+    server_name project2.sf;
+    root /var/www/symfony_project1/web;
+
+    listen   80;
+    
+    (...)
+    
+}
+
+(...)
+```
+
+* mount the volumes into docker-compose.yml
+
+```bash
+php:
+    build: php7-fpm
+    ports:
+        - 9000:9000
+    links:
+        - db:mysqldb
+        - redis
+    volumes:
+        - ../project1:/var/www/symfony_project1
+        - ../project2:/var/www/symfony_project2
+        - ../project3:/var/www/symfony_project3
+        - ./logs/symfony:/var/www/symfony/app/logs
+nginx:
+    (...)
+```
+
+run `docker-compose -d` (alias dkup)
+
+Then you can configure the VCL to fetch the right backend for each project eg. project2.sf:8081 or project3.sf:8081.
+
+## Add Couchdb :
+
+To add CouchDB to this stack, add to docker-compose.yml :
+
+```bash
+couchdb:
+image: couchdb
+ports:
+    - 32768:5984
+```
+
+To get the right ports use 
+
+```bash
+docker inspect dockersymfony_couchdb_1
+```
+    
+result :
+
+```bash
+"PortBindings": {
+    "5984/tcp": [
+        {
+            "HostIp": "",
+            "HostPort": "32768"
+        }
+    ]
+},
+```
+
+You can use [Kinematic](https://kitematic.com/) UI for Docker.
+
+## Docker aliases
+
+Into ~/.bash_profile :
+
+```bash
+alias dk='docker-compose build && docker-compose up -d'
+alias dkup='docker-compose up -d'
+alias dkbuild='docker-compose build'
+alias dks='docker ps'
+alias dkrm='docker stop $(docker ps -a -q) && docker rm $(docker ps -a -q)'
+```
+
 ## How it works?
 
 Have a look at the `docker-compose.yml` file, here are the `docker-compose` built images:
@@ -94,6 +197,7 @@ Have a look at the `docker-compose.yml` file, here are the `docker-compose` buil
 * `nginx`: This is the Nginx webserver container in which application volume is mounted too,
 * `elk`: This is a ELK stack container which uses Logstash to collect logs, send them into Elasticsearch and visualize them with Kibana,
 * `redis`: This is a redis database container.
+* `varnish`: This is a varnish container.
 
 This results in the following running containers:
 
@@ -131,7 +235,7 @@ $ docker-compose exec db mysql -uroot -p"root"
 # Redis commands
 $ docker-compose exec redis redis-cli
 
-# F***ing cache/logs folder
+# Cache/logs folder
 $ sudo chmod -R 777 app/cache app/logs # Symfony2
 $ sudo chmod -R 777 var/cache var/logs # Symfony3
 
