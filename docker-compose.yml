@@ -43,3 +43,16 @@ services:
         volumes_from:
             - php
             - nginx
+    phpmyadmin:
+        image: phpmyadmin/phpmyadmin
+        ports:
+            - "8080:80"
+        links:
+            - db
+    varnish:
+        build: varnish/
+        environment:
+            VARNISH_PORT: 8081
+            VARNISH_MEMORY: 200M
+        ports:
+            - 8081:8081
