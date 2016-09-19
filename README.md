@@ -174,6 +174,8 @@ result :
 },
 ```
 
+Urls for CouchDB : http://localhost:32768/, http://localhost:32768/_utils/ & http://localhost:32768/_utils/fauxton/.
+
 You can use [Kinematic](https://kitematic.com/) UI for Docker.
 
 ## Docker aliases
