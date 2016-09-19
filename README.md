@@ -91,50 +91,54 @@ If you want to use this docker configuration to run multiple Symfony application
 
 * add the needed hosts to your local /etc/hosts
     
-    ```127.0.0.1   localhost project1.sf project2.sf project3.sf```
+```bash
+127.0.0.1   localhost project1.sf project2.sf project3.sf
+```
 
 * configure nginx servers within the docker-symfony/nginx/symfony.conf
 
-    ```server {
-        server_name project1.sf;
-        root /var/www/symfony_project1/web;
-    
-        listen   80;
-        
-        (...)
-        
-    }
-    
-    server {
-        server_name project2.sf;
-        root /var/www/symfony_project1/web;
-    
-        listen   80;
-        
-        (...)
-        
-    }
+```bash
+server {
+    server_name project1.sf;
+    root /var/www/symfony_project1/web;
+
+    listen   80;
     
     (...)
-    ```
+    
+}
+
+server {
+    server_name project2.sf;
+    root /var/www/symfony_project1/web;
+
+    listen   80;
+    
+    (...)
+    
+}
+
+(...)
+```
 
 * mount the volumes into docker-compose.yml
 
-    ```php:
-        build: php7-fpm
-        ports:
-            - 9000:9000
-        links:
-            - db:mysqldb
-            - redis
-        volumes:
-            - ../project1:/var/www/symfony_project1
-            - ../project2:/var/www/symfony_project2
-            - ../project3:/var/www/symfony_project3
-            - ./logs/symfony:/var/www/symfony/app/logs
-    nginx:
-        (...)
-    ```
+```bash
+php:
+    build: php7-fpm
+    ports:
+        - 9000:9000
+    links:
+        - db:mysqldb
+        - redis
+    volumes:
+        - ../project1:/var/www/symfony_project1
+        - ../project2:/var/www/symfony_project2
+        - ../project3:/var/www/symfony_project3
+        - ./logs/symfony:/var/www/symfony/app/logs
+nginx:
+    (...)
+```
 
 run `docker-compose -d` (alias dkup)
 
@@ -144,28 +148,31 @@ Then you can configure the VCL to fetch the right backend for each project eg. p
 
 To add CouchDB to this stack, add to docker-compose.yml :
 
-    ```couchdb:
-    image: couchdb
-    ports:
-        - 32768:5984
-    ```
+```bash
+couchdb:
+image: couchdb
+ports:
+    - 32768:5984
+```
 
 To get the right ports use 
 
-    ```docker inspect dockersymfony_couchdb_1
-    ```
+```bash
+docker inspect dockersymfony_couchdb_1
+```
     
 result :
 
-    ```"PortBindings": {
-        "5984/tcp": [
-            {
-                "HostIp": "",
-                "HostPort": "32768"
-            }
-        ]
-    },
-    ```
+```bash
+"PortBindings": {
+    "5984/tcp": [
+        {
+            "HostIp": "",
+            "HostPort": "32768"
+        }
+    ]
+},
+```
 
 You can use [Kinematic](https://kitematic.com/) UI for Docker.
 
@@ -173,12 +180,13 @@ You can use [Kinematic](https://kitematic.com/) UI for Docker.
 
 Into ~/.bash_profile :
 
-    ```alias dk='docker-compose build && docker-compose up -d'
-    alias dkup='docker-compose up -d'
-    alias dkbuild='docker-compose build'
-    alias dks='docker ps'
-    alias dkrm='docker stop $(docker ps -a -q) && docker rm $(docker ps -a -q)'
-    ```
+```bash
+alias dk='docker-compose build && docker-compose up -d'
+alias dkup='docker-compose up -d'
+alias dkbuild='docker-compose build'
+alias dks='docker ps'
+alias dkrm='docker stop $(docker ps -a -q) && docker rm $(docker ps -a -q)'
+```
 
 ## How it works?
 
@@ -227,7 +235,7 @@ $ docker-compose exec db mysql -uroot -p"root"
 # Redis commands
 $ docker-compose exec redis redis-cli
 
-# F***ing cache/logs folder
+# Cache/logs folder
 $ sudo chmod -R 777 app/cache app/logs # Symfony2
 $ sudo chmod -R 777 var/cache var/logs # Symfony3
 
