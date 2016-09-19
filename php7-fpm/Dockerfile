@@ -4,20 +4,28 @@ FROM php:7.0-fpm
 MAINTAINER Maxence POUTORD <maxence.poutord@gmail.com>
 
 RUN apt-get update && apt-get install -y \
+
     git \
-    unzip
+    unzip \
 
-# Install Composer
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
-RUN composer --version
+    # GD dependencies
 
-# Set timezone
-RUN rm /etc/localtime
-RUN ln -s /usr/share/zoneinfo/Europe/Paris /etc/localtime
-RUN "date"
+    libfreetype6-dev \
+    libjpeg62-turbo-dev \
+    libpng12-dev \
+    # webp
+    libvpx-dev \
 
-# Type docker-php-ext-install to see available extensions
-RUN docker-php-ext-install pdo pdo_mysql opcache
+    # Type docker-php-ext-install to see available extensions
+
+    && docker-php-ext-install pdo_mysql opcache \
+
+    # GD configure
+
+    && docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ --with-png-dir=/usr/include/ --with-vpx-dir=/usr/include/ \
+    && docker-php-ext-install gd
+
+# opcache
 
 RUN { \
 		echo 'opcache.memory_consumption=128'; \
@@ -30,7 +38,18 @@ RUN { \
 
 RUN echo "realpath_cache_size = 4096k; realpath_cache_ttl = 7200;" > /usr/local/etc/php/conf.d/php.ini
 
+# Install Composer
+
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer && \
+    composer --version
+
+# Set timezone
+
+RUN rm /etc/localtime && \
+    ln -s /usr/share/zoneinfo/Europe/Paris /etc/localtime && \
+    "date"
+
 RUN echo 'alias sf="php app/console"' >> ~/.bashrc
 RUN echo 'alias sf3="php bin/console"' >> ~/.bashrc
 
-WORKDIR /var/www/symfony
+#WORKDIR /var/www/symfony
