@@ -116,7 +116,7 @@ No need to modify nginx/symfony.conf as a wildcard is set to map automaticaly a 
 
 run `docker-compose -d` (alias dkup)
 
-For OPcache & PHP FPM you can read the [Symfony documentation for NGINX](http://symfony.com/doc/current/setup/web_server_configuration.html#nginx), more details here : [OPcache Symfony symlinks issue for a Cafipony deployment](https://github.com/symfony/symfony-docs/pull/5758).
+For OPcache & PHP FPM you can read the [Symfony documentation for NGINX](http://symfony.com/doc/current/setup/web_server_configuration.html#nginx), more details here : [OPcache Symfony symlinks issue for a Capifony deployment](https://github.com/symfony/symfony-docs/pull/5758).
 
 Then you can configure the VCL to fetch the right backend for each project eg. project2.sf:81 or project3.sf:81.
 
