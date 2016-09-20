@@ -83,7 +83,7 @@ Just run `docker-compose -d`, then:
 * Logs (files location): logs/nginx and logs/symfony
 * PHPMyAdmin : [symfony.dev:8080](http://symfony.dev:8080)
 
-## Multiple applications running on this stack
+## Multiple applications running on this stack for a [Service Oriented Architecture (SOA)](https://en.wikipedia.org/wiki/Service-oriented_architecture) application
 
 If you want to use this docker configuration to run multiple Symfony applications - ex : project{1,2,3} - follow those steps :
 
@@ -116,7 +116,7 @@ No need to modify nginx/symfony.conf as a wildcard is set to map automaticaly a 
 
 run `docker-compose -d` (alias dkup)
 
-For opcache & PHP FPM you can read the [Symfony documentation for NGINX](http://symfony.com/doc/current/setup/web_server_configuration.html#nginx).
+For OPcache & PHP FPM you can read the [Symfony documentation for NGINX](http://symfony.com/doc/current/setup/web_server_configuration.html#nginx), more details here : [OPcache Symfony symlinks issue for a Cafipony deployment](https://github.com/symfony/symfony-docs/pull/5758).
 
 Then you can configure the VCL to fetch the right backend for each project eg. project2.sf:81 or project3.sf:81.
 
@@ -228,6 +228,10 @@ $ docker rm $(docker ps -aq)
 # Delete all images
 $ docker rmi $(docker images -q)
 ```
+
+## Commits
+
+If you need to display the latest Git commits into the Symfony debug bar and link them to your code repository you can use this [bundle](https://github.com/kendrick-k/symfony-debug-toolbar-git).
 
 ## FAQ
 
