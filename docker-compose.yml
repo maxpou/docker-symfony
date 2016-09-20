@@ -21,7 +21,13 @@ services:
             - db:mysqldb
             - redis
         volumes:
-            - ../../sites/lab/symfony-rest-beer-edition:/var/www/symfony
+            - ../data-storage-interface:/var/www/symfony_data-storage-interface
+            - ../stock:/var/www/symfony_stock
+            - ../front:/var/www/symfony_front
+            - ../image-processing:/var/www/symfony_image-processing
+            - ../platform:/var/www/symfony_platform
+            - ../analytics:/var/www/symfony_analytics
+            - ../data-storage:/var/www/symfony_data-storage
             - ./logs/symfony:/var/www/symfony/app/logs
     nginx:
         build: nginx
@@ -29,6 +35,7 @@ services:
             - 80:80
         links:
             - php
+            - varnish
         volumes_from:
             - php
         volumes:
@@ -36,7 +43,7 @@ services:
     elk:
         image: willdurand/elk
         ports:
-            - 81:80
+            - 8081:80
         volumes:
             - ./elk/logstash:/etc/logstash
             - ./elk/logstash/patterns:/opt/logstash/patterns
@@ -46,7 +53,7 @@ services:
     phpmyadmin:
         image: phpmyadmin/phpmyadmin
         ports:
-            - "8080:80"
+            - 8080:80
         links:
             - db
     varnish:
@@ -55,4 +62,8 @@ services:
             VARNISH_PORT: 8081
             VARNISH_MEMORY: 200M
         ports:
-            - 8081:8081
+            - 81:8081
+    couchdb:
+        image: couchdb
+        ports:
+            - 8082:5984
