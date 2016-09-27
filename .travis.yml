@@ -14,9 +14,7 @@ before_install:
   - docker -v
   # symfony application folder
   - mkdir symfony
-  - line_old='../../sites/lab/symfony-rest-beer-edition:/var/www/symfony'
-  - line_new='./symfony:/var/www/symfony'
-  - sed -i "s%$line_old%$line_new%g" docker-compose.yml
+  - cp .env.dist .env
   - cat docker-compose.yml
 
 script:

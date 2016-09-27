@@ -8,7 +8,10 @@ services:
         volumes:
             - "./.data/db:/var/lib/mysql"
         environment:
-            MYSQL_ROOT_PASSWORD: root
+            MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+            MYSQL_DATABASE: ${MYSQL_DATABASE}
+            MYSQL_USER: ${MYSQL_USER}
+            MYSQL_PASSWORD: ${MYSQL_PASSWORD}
     redis:
         image: redis:alpine
         ports:
@@ -21,7 +24,7 @@ services:
             - db:mysqldb
             - redis
         volumes:
-            - ../../sites/lab/symfony-rest-beer-edition:/var/www/symfony
+            - ${SYMFONY_APP_PATH}:/var/www/symfony
             - ./logs/symfony:/var/www/symfony/app/logs
     nginx:
         build: nginx
