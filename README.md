@@ -8,14 +8,12 @@ Docker-symfony gives you everything you need for developing Symfony application.
 
 ## Installation
 
-1. In the docker-compose file, indicate where's your Symfony project
+1. Create a `.env` from the `.env.dist` file. Adapt it according to your symfony application
 
-    ```yml
-    services:
-        php:
-            volumes:
-                - path/to/your/symfony-project:/var/www/symfony
+    ```bash
+    cp .env.dist .env
     ```
+
 
 2. Build/run containers with (with and without detached mode)
 
@@ -29,7 +27,7 @@ Docker-symfony gives you everything you need for developing Symfony application.
 
     ```bash
     # get containers IP address and update host (replace IP according to your configuration)
-    $ docker inspect --format '{{ .NetworkSettings.IPAddress }}' $(docker ps -f name=nginx -q)
+    $ docker inspect --format '{{ .NetworkSettings.Networks.dockersymfony_default.IPAddress }}' $(docker ps -f name=nginx -q)
     # unix only (on Windows, edit C:\Windows\System32\drivers\etc\hosts)
     $ sudo echo "171.17.0.1 symfony.dev" >> /etc/hosts
     ```
@@ -37,27 +35,17 @@ Docker-symfony gives you everything you need for developing Symfony application.
     **Note:** If it's empty, run `docker inspect $(docker ps -f name=nginx -q) | grep IPAddress` instead.
 
 4. Prepare Symfony app
-    1. Retrieve DB&Redis IP
-
-        ```bash
-        $ docker inspect --format '{{ .NetworkSettings.Networks.dockersymfony_default.IPAddress }}' $(docker ps -f name=db -q)
-        $ docker inspect --format '{{ .NetworkSettings.Networks.dockersymfony_default.IPAddress }}' $(docker ps -f name=redis -q)
-        ```
-
-        **Note:** If it's empty, run `docker inspect $(docker ps -f name=db -q) | grep IPAddress` instead.
-
-    2. Update app/config/parameters.yml
+    1. Update app/config/parameters.yml
 
         ```yml
         # path/to/your/symfony-project/app/config/parameters.yml
         parameters:
             database_host: mysqldb
-            database_password: root
             #...
             redis_host: redis
         ```
 
-    3. Composer install & create database
+    2. Composer install & create database
 
         ```bash
         $ docker-compose exec php bash
@@ -167,8 +155,3 @@ Run `docker-compose up -d` instead.
 First of all, **thank you** for contributing ♥  
 If you find any typo/misconfiguration/... please send me a PR or open an issue. You can also ping me on [twitter](https://twitter.com/_maxpou).  
 Also, while creating your Pull Request on GitHub, please write a description which gives the context and/or explains why you are creating it.
-
-
-## TODO
-
-- [ ] Upgrade ELK stack + install [Timelion](https://github.com/elastic/timelion) plugin <3
