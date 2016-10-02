@@ -150,6 +150,10 @@ Run `docker-compose up -d` instead.
 
 * Permission problem? See [this doc (Setting up Permission)](http://symfony.com/doc/current/book/installation.html#checking-symfony-application-configuration-and-setup)
 
+* How to config Xdebug?
+Xdebug is configured out of the box!
+Just config your IDE to connect port  `9001` and id key `PHPSTORM`
+
 ## Contributing
 
 First of all, **thank you** for contributing ♥  
