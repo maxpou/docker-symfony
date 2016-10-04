@@ -19,7 +19,6 @@ Docker-symfony gives you everything you need for developing Symfony application.
 
     ```bash
     $ docker-compose build
-    $ docker-compose up
     $ docker-compose up -d
     ```
 
