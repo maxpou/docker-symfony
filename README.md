@@ -153,6 +153,17 @@ Run `docker-compose up -d` instead.
 Xdebug is configured out of the box!
 Just config your IDE to connect port  `9001` and id key `PHPSTORM`
 
+* Using [SncRedis](https://github.com/snc/SncRedisBundle)? Your config file should be like this:
+
+    ```yml
+    snc_redis:
+        clients:
+            default:
+                type: predis
+                alias: default
+                dsn: redis://%redis_host%
+    ```
+
 ## Contributing
 
 First of all, **thank you** for contributing ♥  
