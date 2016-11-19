@@ -25,13 +25,14 @@ Docker-symfony gives you everything you need for developing Symfony application.
 3. Update your system host file (add symfony.dev)
 
     ```bash
-    # get containers IP address and update host (replace IP according to your configuration)
-    $ docker inspect --format '{{ .NetworkSettings.Networks.dockersymfony_default.IPAddress }}' $(docker ps -f name=nginx -q)
+    # UNIX only: get containers IP address and update host (replace IP according to your configuration)
+    $ docker network inspect bridge | grep Gateway
+
     # unix only (on Windows, edit C:\Windows\System32\drivers\etc\hosts)
     $ sudo echo "171.17.0.1 symfony.dev" >> /etc/hosts
     ```
 
-    **Note:** If it's empty, run `docker inspect $(docker ps -f name=nginx -q) | grep IPAddress` instead.
+    **Note:** For **OS X**, please take a look [here](https://docs.docker.com/docker-for-mac/networking/) and for **Windows** read [this](https://docs.docker.com/docker-for-windows/#/step-4-explore-the-application-and-run-examples) (4th step).
 
 4. Prepare Symfony app
     1. Update app/config/parameters.yml
@@ -108,6 +109,10 @@ $ docker-compose exec php php /var/www/symfony/bin/console cache:clear # Symfony
 # Same command by using alias
 $ docker-compose exec php bash
 $ sf cache:clear
+
+# Retrieve an IP Address (here for the nginx container)
+$ docker inspect --format '{{ .NetworkSettings.Networks.dockersymfony_default.IPAddress }}' $(docker ps -f name=nginx -q)
+$ docker inspect $(docker ps -f name=nginx -q) | grep IPAddress
 
 # MySQL commands
 $ docker-compose exec db mysql -uroot -p"root"
