@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/maxpou/docker-symfony.svg?branch=master)](https://travis-ci.org/maxpou/docker-symfony)
 
-![](http://www.maxpou.fr/images/articles/symfony-docker/schema-v2.png)
+![](doc/schema.png)
 
 Docker-symfony gives you everything you need for developing Symfony application. This complete stack run with docker and [docker-compose (1.7 or higher)](https://docs.docker.com/compose/).
 

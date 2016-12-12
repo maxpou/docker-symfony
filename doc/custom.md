@@ -1,5 +1,8 @@
 # How to customise this stack
 
+* [Add PHPMyAdmin](#Add-phpmyadmin)
+* [Add Redis](#Add-redis)
+
 ## Add PHPMyAdmin
 
 1. Update docker-compose.yml file and add the following lines:
@@ -31,7 +34,7 @@
     ```
 
 2. Link PHP and Redis
-    
+
     ```yml
     service:
         # ...
@@ -50,7 +53,7 @@
         redis_host: redis
     ```
 
-* Using [SncRedis](https://github.com/snc/SncRedisBundle)?  
+:question: Using [SncRedis](https://github.com/snc/SncRedisBundle)?  
 Your Symfony config file should be like this:
 
 ```yml
@@ -64,7 +67,7 @@ snc_redis:
 
 Access to redis-cli with:
 
-```sh
+```bash
 # Redis commands
 $ docker-compose exec redis redis-cli
 ```
