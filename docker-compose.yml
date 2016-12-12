@@ -12,17 +12,12 @@ services:
             MYSQL_DATABASE: ${MYSQL_DATABASE}
             MYSQL_USER: ${MYSQL_USER}
             MYSQL_PASSWORD: ${MYSQL_PASSWORD}
-    redis:
-        image: redis:alpine
-        ports:
-            - 6379:6379
     php:
         build: php7-fpm
         ports:
             - 9000:9000
         links:
             - db:mysqldb
-            - redis
         volumes:
             - ${SYMFONY_APP_PATH}:/var/www/symfony
             - ./logs/symfony:/var/www/symfony/app/logs
