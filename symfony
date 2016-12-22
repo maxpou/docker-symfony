@@ -1,0 +1,188 @@
+#!/bin/sh
+#
+# A control-script for managing the docker-infrastructure components
+# The first parameter is the action name
+action=$1
+
+# All other arguments are parameters
+if [ "$#" -gt "1" ]; then
+shift
+parameters=$@
+fi
+
+# Paths
+SCRIPTNAME=`basename $0`
+SCRIPTPATH=$(readlink -f "$0" 2>/dev/null)
+if [ "$?" != 0 ]; then
+    if [ ! -f "docker-compose.yml" ]; then
+	>&2 echo " The $SCRIPTNAME-script will only work (on Mac OS) if you execute it from the project directory itself."
+	exit 1
+    fi
+    SCRIPTPATH="$(pwd -P)/$SCRIPTNAME"
+fi
+PROJECTPATH=$(dirname "$SCRIPTPATH")
+
+# Switch into the project directory
+cd $PROJECTPATH
+
+# Mandatory Tools
+DOCKER=`which docker`
+if [ -z "$DOCKER" ];
+then
+    echo "'docker' was not found on your system." >&2
+    exit 1
+fi
+
+DOCKERCOMPOSE=`which docker-compose`
+if [ -z "$DOCKERCOMPOSE" ];
+then
+    echo "'docker-compose' was not found on your system." >&2
+    exit 1
+fi
+
+# Utils
+XARGS=`which xargs`
+GREP=`which grep`
+SED=`which sed`
+
+#########################################################################
+# Get the full container name for the given container type (e.g. "php")
+# Arguments:
+#  CONTAINER_TYPE
+# Returns:
+#  The full name of the (first) container with the given type
+#########################################################################
+getContainerNameByType() {
+    # abort if no type is specified
+    local CONTAINER_TYPE="$1"
+    if [ -z "$CONTAINER_TYPE" ];
+    then
+        echo "No container type specified. Please specifiy a container type (e.g. php, db, nginx, elk, ...)."  >&2
+        return 1
+    fi
+
+    # check if xargs is available
+    if [ -z "$XARGS" ];
+    then
+        echo "The tool 'xargs' was not found on your system." >&2
+        return 1
+    fi
+
+    # check if grep is available
+    if [ -z "$GREP" ];
+    then
+        echo "The tool 'grep' was not found on your system." >&2
+        return 1
+    fi
+
+    # check if sed is available
+    if [ -z "$SED" ];
+    then
+        echo "The tool 'sed' was not found on your system." >&2
+        return 1
+    fi
+
+    local containerName=$($DOCKER ps -q | $XARGS $DOCKER inspect --format '{{.Name}}' | $GREP "$CONTAINER_TYPE" | $SED 's:/::' | $GREP "$CONTAINER_TYPE_1")
+    echo $containerName
+    return 0
+}
+
+executeConsole() {
+    local containerType="php"
+    local containerName=$(getContainerNameByType "$containerType")
+    if [ -z "$containerName" ];
+    then
+        echo "Cannot determine the name of the container." >&2
+        return 1
+    fi
+
+    $DOCKER exec -ti $containerName app/console $@
+    return 0
+}
+
+executeComposer() {
+    local containerType="php"
+    local containerName=$(getContainerNameByType $containerType)
+    if [ -z "$containerName" ];
+    then
+        echo "Cannot determine the name of the container." >&2
+        return 1
+    fi
+
+    $DOCKER exec $containerName composer $@
+    return 0
+}
+
+enterContainer() {
+    local containerType="$1"
+    if [ -z "$containerType" ];
+    then
+        echo "No container type specified. Please specifiy a container type (e.g. php, db, nginx, elk, ...)."  >&2
+        return 1
+    fi
+
+    local containerName=$(getContainerNameByType $containerType)
+    if [ -z "$containerName" ];
+    then
+        echo "Cannot determine the name of the container." >&2
+        return 1
+    fi
+
+    $DOCKER exec -ti $containerName bash
+    return 0
+}
+
+stats() {
+    # check if sed is available
+    if [ -z "$SED" ];
+    then
+        echo "Stats requires 'sed'. The tool was not found on your system." >&2
+        return 1
+    fi
+
+    $DOCKER ps -q | $XARGS $DOCKER inspect --format '{{.Name}}' | $SED 's:/::' | $XARGS $DOCKER stats
+}
+
+console() {
+    executeConsole $parameters
+}
+
+composer() {
+    executeComposer $parameters
+}
+
+enter() {
+    enterContainer $parameters
+}
+
+
+case "$action" in
+
+    stats)
+    stats
+    ;;
+
+    console)
+    console
+    ;;
+
+    composer)
+    composer
+    ;;
+
+    enter)
+    enter
+    ;;
+
+    *)
+    echo "usage : $0 stats|console|composer|enter
+
+  stats      Displays live resource usage statistics of all containers
+  console    Executes app/console in the symfony root directory
+  composer   Executes composer in the symfony root directory
+  enter      Enters the bash of a given container type (e.g. php, nginx)
+"
+    ;;
+esac
+
+exit 0
