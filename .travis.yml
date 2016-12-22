@@ -13,7 +13,7 @@ before_install:
   - docker-compose -v
   - docker -v
   # symfony application folder
-  - mkdir -p symfony
+  - mkdir -p .data/src
   - cp .env.dist .env
   - cat docker-compose.yml
 
