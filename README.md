@@ -40,7 +40,7 @@ Docker-symfony gives you everything you need for developing Symfony application.
         ```yml
         # path/to/your/symfony-project/app/config/parameters.yml
         parameters:
-            database_host: mysqldb
+            database_host: db
         ```
 
     2. Composer install & create database
