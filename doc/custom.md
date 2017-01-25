@@ -14,8 +14,6 @@
             image: phpmyadmin/phpmyadmin
             ports:
                 - "8080:80"
-            links:
-                - db
     ```
 
 2. Visit: [symfony.dev:8080](http://symfony.dev:8080)
@@ -33,18 +31,7 @@
                 - 6379:6379
     ```
 
-2. Link PHP and Redis
-
-    ```yml
-    service:
-        # ...
-        php:
-            # ...
-            links:
-                - redis
-    ```
-
-3. Adapt your Symfony configuration file
+2. Adapt your Symfony configuration file
 
     ```yml
     # path/to/your/symfony-project/app/config/parameters.yml
