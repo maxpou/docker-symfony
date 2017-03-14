@@ -1,11 +1,15 @@
 # See https://github.com/docker-library/php/blob/4677ca134fe48d20c820a19becb99198824d78e3/7.0/fpm/Dockerfile
 FROM php:7.0-fpm
 
-MAINTAINER Maxence POUTORD <maxence.poutord@gmail.com>
-
+MAINTAINER Mariano Egui <mariano@handerr.com>
 RUN apt-get update && apt-get install -y \
     git \
     unzip
+
+# Install Node
+RUN curl -sL https://deb.nodesource.com/setup_6.x | bash - ; apt-get install -y nodejs
+RUN npm --version
+RUN npm install -g less uglifyjs uglifycss
 
 # Install Composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
