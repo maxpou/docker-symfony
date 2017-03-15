@@ -4,7 +4,8 @@ FROM php:7.0-fpm
 MAINTAINER Mariano Egui <mariano@handerr.com>
 RUN apt-get update && apt-get install -y \
     git \
-    unzip
+    unzip \
+    zlib1g-dev
 
 # Install Node
 RUN curl -sL https://deb.nodesource.com/setup_6.x | bash - ; apt-get install -y nodejs
@@ -27,6 +28,8 @@ RUN docker-php-ext-install pdo pdo_mysql
 # install xdebug
 RUN pecl install xdebug
 RUN docker-php-ext-enable xdebug
+RUN pecl install zip
+RUN docker-php-ext-enable zip
 RUN echo "error_reporting = E_ALL" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
 RUN echo "display_startup_errors = On" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
 RUN echo "display_errors = On" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
