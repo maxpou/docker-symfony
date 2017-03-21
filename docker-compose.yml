@@ -12,8 +12,6 @@ services:
             MYSQL_PASSWORD: ${MYSQL_PASSWORD}
     php:
         build: php7-fpm
-        ports:
-            - 9000:9000
         volumes:
             - ${SYMFONY_APP_PATH}:/var/www/symfony
             - ./logs/symfony:/var/www/symfony/app/logs
