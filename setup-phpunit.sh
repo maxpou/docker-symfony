@@ -11,7 +11,7 @@ if [ -z "$MARIADB_MAJOR" ]; then
     # Copy the setup command to the database container and run
     DB_CONTAINER=$(docker-compose ps | grep db | cut -d " " -f1)
     docker cp $SCRIPT "$DB_CONTAINER:/"
-    docker-compose exec db bash $SCRIPT
+    docker-compose exec db bash /$SCRIPT
 
     echo Laravel db setup installed and ran successfully
 else
