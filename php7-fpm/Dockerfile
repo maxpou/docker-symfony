@@ -5,7 +5,9 @@ MAINTAINER Mariano Egui <mariano@handerr.com>
 RUN apt-get update && apt-get install -y \
     git \
     unzip \
-    zlib1g-dev
+    zlib1g-dev \
+    libmcrypt-dev \
+    libssl-dev
 
 # Install Node
 RUN curl -sL https://deb.nodesource.com/setup_6.x | bash - ; apt-get install -y nodejs
@@ -21,14 +23,14 @@ RUN rm /etc/localtime
 RUN ln -s /usr/share/zoneinfo/Europe/Paris /etc/localtime
 RUN "date"
 
+RUN pecl install xdebug
+RUN pecl install zip
 # Type docker-php-ext-install to see available extensions
-RUN docker-php-ext-install pdo pdo_mysql
+RUN docker-php-ext-install pdo pdo_mysql zip
 
 
 # install xdebug
-RUN pecl install xdebug
 RUN docker-php-ext-enable xdebug
-RUN pecl install zip
 RUN docker-php-ext-enable zip
 RUN echo "error_reporting = E_ALL" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
 RUN echo "display_startup_errors = On" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
