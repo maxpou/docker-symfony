@@ -7,6 +7,7 @@ RUN apt-get update && apt-get install -y \
     unzip \
     zlib1g-dev \
     libmcrypt-dev \
+    libxml2-dev \
     libssl-dev
 
 # Install Node
@@ -26,12 +27,13 @@ RUN "date"
 RUN pecl install xdebug
 RUN pecl install zip
 # Type docker-php-ext-install to see available extensions
-RUN docker-php-ext-install pdo pdo_mysql zip
+RUN docker-php-ext-install pdo pdo_mysql zip soap
 
 
 # install xdebug
 RUN docker-php-ext-enable xdebug
 RUN docker-php-ext-enable zip
+RUN docker-php-ext-enable soap
 RUN echo "error_reporting = E_ALL" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
 RUN echo "display_startup_errors = On" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
 RUN echo "display_errors = On" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
