@@ -5,7 +5,9 @@ MAINTAINER Mariano Egui <mariano@handerr.com>
 RUN apt-get update && apt-get install -y \
     git \
     unzip \
+    libzip-dev \
     zlib1g-dev \
+    libbz2-dev \
     libmcrypt-dev \
     libxml2-dev \
     libssl-dev
@@ -13,7 +15,7 @@ RUN apt-get update && apt-get install -y \
 # Install Node
 RUN curl -sL https://deb.nodesource.com/setup_6.x | bash - ; apt-get install -y nodejs
 RUN npm --version
-RUN npm install -g less bower uglifyjs uglifycss
+RUN npm install -g less bower uglify-js uglifycss
 
 # Install Composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
