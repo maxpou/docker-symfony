@@ -72,6 +72,8 @@ configured on the computer you use.
 * Laravel app: visit [app.dev](http://app.dev)  
 * Logs (Kibana): [app.dev:81](http://app.dev:81)
 * Logs (files location): logs/nginx and logs/laravel
+* MailCatcher: [app.dev:82](http://app.dev:82)
+ - For instructions please refer to https://mailcatcher.me/
 
 ## How it works?
 

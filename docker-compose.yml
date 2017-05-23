@@ -25,6 +25,7 @@ php:
     links:
         - db
         - redis
+        - mail
 nginx:
     build: nginx
     links:
@@ -46,3 +47,8 @@ elk:
         - nginx
     ports:
         - 81:80
+        - 1025:1025
+mail:
+  build: mailcatcher
+  ports:
+    - "82:1080"
