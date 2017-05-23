@@ -20,12 +20,16 @@ redis:
       - 6379:6379
 php:
     build: php7-fpm
+    environment:
+        MAIL_ENCRYPTION: 0
+        MAIL_PRETEND: 0
+        MAIL_USERNAME: null
+        MAIL_PASSWORD: null
     volumes_from:
         - application
     links:
         - db
         - redis
-        - mail
 nginx:
     build: nginx
     links:
@@ -47,8 +51,8 @@ elk:
         - nginx
     ports:
         - 81:80
-        - 1025:1025
 mail:
   build: mailcatcher
   ports:
-    - "82:1080"
+    - 82:1080
+    - 25:1025
