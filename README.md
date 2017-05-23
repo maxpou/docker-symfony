@@ -50,6 +50,7 @@ configured on the computer you use.
     1. Update app/.env (adapt hosts according to previous results)
 
         ```ini
+        # Docker database configuration
         DB_CONNECTION=mysql
         DB_DATABASE=laravel
         DB_DATABASE_TEST=laravel_test
@@ -57,6 +58,13 @@ configured on the computer you use.
         DB_PORT=3306
         DB_USERNAME=laravel
         DB_PASSWORD=laravel
+
+        # Docker SMTP MailCatcher configuration
+        MAIL_DRIVER=smtp
+        MAIL_HOST=app.dev
+        MAIL_PORT=25
+        MAIL_FROM_ADDRESS=docker@local
+        MAIL_FROM_NAME="Docker"
         ```
 
     2. Composer install
@@ -72,6 +80,8 @@ configured on the computer you use.
 * Laravel app: visit [app.dev](http://app.dev)  
 * Logs (Kibana): [app.dev:81](http://app.dev:81)
 * Logs (files location): logs/nginx and logs/laravel
+* MailCatcher: [app.dev:82](http://app.dev:82)
+ - For instructions please refer to https://mailcatcher.me/
 
 ## How it works?
 
