@@ -16,7 +16,7 @@ RUN apt-get update && apt-get install -y \
 # Install Node
 RUN curl -sL https://deb.nodesource.com/setup_6.x | bash - ; apt-get install -y nodejs
 RUN npm --version
-RUN npm install -g less bower uglify-js uglifycss
+RUN npm install -g less uglify-js uglifycss yarn
 
 # Install Composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
@@ -51,6 +51,6 @@ RUN echo "xdebug.remote_port=9001" >> /usr/local/etc/php/conf.d/docker-php-ext-x
 RUN echo 'alias sf="php app/console"' >> ~/.bashrc
 RUN echo 'alias sf3="php bin/console"' >> ~/.bashrc
 RUN echo 'alias sf3db="sf3 doctrine:database:drop --force && sf3 doctrine:database:create && sf3 doctrine:schema:update --force --no-interaction && sf3 doctrine:fixtures:load --no-interaction"' >> ~/.bashrc
-RUN echo 'alias sf3static="bower install --allow-root && sf3 assets:install --symlink && sf3 assetic:dump"' >> ~/.bashrc
+RUN echo 'alias sf3static="npm run install-dependencies && sf3 assets:install --symlink && sf3 assetic:dump"' >> ~/.bashrc
 
 WORKDIR /var/www/symfony
