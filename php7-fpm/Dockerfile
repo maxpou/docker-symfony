@@ -51,6 +51,6 @@ RUN echo "xdebug.remote_port=9001" >> /usr/local/etc/php/conf.d/docker-php-ext-x
 RUN echo 'alias sf="php app/console"' >> ~/.bashrc
 RUN echo 'alias sf3="php bin/console"' >> ~/.bashrc
 RUN echo 'alias sf3db="sf3 doctrine:database:drop --force && sf3 doctrine:database:create && sf3 doctrine:schema:update --force --no-interaction && sf3 doctrine:fixtures:load --no-interaction"' >> ~/.bashrc
-RUN echo 'alias sf3static="npm run install-dependencies && sf3 assets:install --symlink && sf3 assetic:dump"' >> ~/.bashrc
+RUN echo 'alias sf3static="npm run install-dependencies && sf3 bazinga:js-translation:dump && sf3 assets:install --symlink && sf3 assetic:dump"' >> ~/.bashrc
 
 WORKDIR /var/www/symfony
