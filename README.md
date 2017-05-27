@@ -69,7 +69,7 @@ Just run `docker-compose up -d`, then:
 * Logs (Kibana): [symfony.dev:81](http://symfony.dev:81)
 * Logs (files location): logs/nginx and logs/symfony
 
-## Customize
+## Customize
 
 If you want to add optionnals containers like Redis, PHPMyAdmin... take a look on [doc/custom.md](doc/custom.md).
 
