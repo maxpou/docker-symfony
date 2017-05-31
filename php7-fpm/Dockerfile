@@ -31,6 +31,14 @@ RUN echo "xdebug.remote_connect_back=1" >> /usr/local/etc/php/conf.d/docker-php-
 RUN echo "xdebug.idekey=\"PHPSTORM\"" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
 RUN echo "xdebug.remote_port=9001" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
 
+# install redis
+RUN git clone https://github.com/phpredis/phpredis.git /tmp/phpredis
+RUN cd /tmp/phpredis && git checkout php7
+RUN cd /tmp/phpredis && phpize
+RUN cd /tmp/phpredis && ./configure
+RUN cd /tmp/phpredis && make && make install
+RUN rm -rf /tmp/phpredis
+RUN echo "extension=redis.so" > /usr/local/etc/php/conf.d/docker-php-ext-redis.ini
 
 RUN echo 'alias sf="php app/console"' >> ~/.bashrc
 RUN echo 'alias sf3="php bin/console"' >> ~/.bashrc
