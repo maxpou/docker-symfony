@@ -31,7 +31,7 @@ RUN pecl install xdebug
 RUN pecl install zip
 RUN pecl install imagick
 # Type docker-php-ext-install to see available extensions
-RUN docker-php-ext-install pdo pdo_mysql zip soap
+RUN docker-php-ext-install pdo pdo_mysql zip soap pcntl
 
 
 # install xdebug
