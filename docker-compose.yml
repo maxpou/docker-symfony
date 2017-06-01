@@ -10,11 +10,13 @@ services:
             MYSQL_DATABASE: ${MYSQL_DATABASE}
             MYSQL_USER: ${MYSQL_USER}
             MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+        ports:
+            - 3306:3306
     php:
         build: php7-fpm
         volumes:
-            - ${SYMFONY_APP_PATH}:/var/www/symfony
-            - ./logs/symfony:/var/www/symfony/app/logs
+            - ${SYMFONY_APP_PATH}:/var/www/symfony:cached
+            - ./logs/symfony:/var/www/symfony/app/logs:cached
     nginx:
         build: nginx
         ports:
@@ -28,8 +30,8 @@ services:
         ports:
             - 81:80
         volumes:
-            - ./elk/logstash:/etc/logstash
-            - ./elk/logstash/patterns:/opt/logstash/patterns
+            - ./elk/logstash:/etc/logstash:cached
+            - ./elk/logstash/patterns:/opt/logstash/patterns:cached
         volumes_from:
             - php
             - nginx
