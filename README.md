@@ -51,10 +51,12 @@ Docker-symfony gives you everything you need for developing Symfony application.
         # Symfony2
         $ sf doctrine:database:create
         $ sf doctrine:schema:update --force
+        # Only if you have `doctrine/doctrine-fixtures-bundle` installed
         $ sf doctrine:fixtures:load --no-interaction
         # Symfony3
         $ sf3 doctrine:database:create
         $ sf3 doctrine:schema:update --force
+        # Only if you have `doctrine/doctrine-fixtures-bundle` installed
         $ sf3 doctrine:fixtures:load --no-interaction
         ```
 
@@ -119,7 +121,7 @@ $ docker-compose exec db mysql -uroot -p"root"
 
 # F***ing cache/logs folder
 $ sudo chmod -R 777 app/cache app/logs # Symfony2
-$ sudo chmod -R 777 var/cache var/logs # Symfony3
+$ sudo chmod -R 777 var/cache var/logs var/sessions # Symfony3
 
 # Check CPU consumption
 $ docker stats $(docker inspect -f "{{ .Name }}" $(docker ps -q))
