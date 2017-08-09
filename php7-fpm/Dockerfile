@@ -12,8 +12,7 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 RUN composer --version
 
 # Set timezone
-RUN rm /etc/localtime
-RUN ln -s /usr/share/zoneinfo/Europe/Paris /etc/localtime
+RUN ln -snf /usr/share/zoneinfo/Europe/Paris /etc/localtime
 RUN "date"
 
 # Type docker-php-ext-install to see available extensions
