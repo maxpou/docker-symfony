@@ -14,6 +14,7 @@ RUN composer --version
 # Set timezone
 ENV TZ=Europe/Paris
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+RUN printf '[PHP]\ndate.timezone = "%s"\n', $TZ > /usr/local/etc/php/conf.d/tzone.ini
 RUN "date"
 
 # Type docker-php-ext-install to see available extensions
