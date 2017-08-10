@@ -5,7 +5,7 @@
 
 ![](doc/schema.png)
 
-**NOTE:** This complete stack run with docker and [docker-compose](https://docs.docker.com/compose/).
+:warning: This complete stack runs with docker and docker-compose. They need to be installed and running!
 
 ## Installation
 
