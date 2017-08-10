@@ -5,7 +5,7 @@
 
 ![](doc/schema.png)
 
-:warning: This stack uses docker and docker-compose.
+:warning: This stack needs docker and docker-compose to be installed.
 
 ## Installation
 
@@ -53,11 +53,11 @@
 
 We have the following *docker-compose* built images:
 
-* `nginx`: This is the Nginx webserver container in which application volume is mounted.
-* `php`: This is the PHP-FPM container in which the application volume is mounted too.
-* `db`: This is the MySQL database container.
+* `nginx`: The Nginx webserver container in which the application volume is mounted.
+* `php`: The PHP-FPM container in which the application volume is mounted too.
+* `db`: The MySQL database container.
 * `elk`: Container which uses Logstash to collect logs, send them into Elasticsearch and visualize them with Kibana.
-* `redis`: This is the Redis service container.
+* `redis`: The Redis server container.
 
 Running `docker-compose ps` should result in the following running containers:
 
