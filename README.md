@@ -5,7 +5,7 @@
 
 ![](doc/schema.png)
 
-:warning: This complete stack runs with docker and docker-compose. They need to be installed and running!
+:warning: This stack uses docker and docker-compose.
 
 ## Installation
 
@@ -81,25 +81,4 @@ Once all the containers are up, our services are available at:
 
 ---
 
-## Useful commands
-
-```sh
-# Docker commands
-$ docker stats $(docker inspect -f "{{ .Name }}" $(docker ps -q)) # Check CPU consumption
-$ docker stop $(docker ps -aq) # Stop all containers
-$ docker rm $(docker ps -aq) # Delete all containers
-$ docker rmi $(docker images -q) # Delete all images
-
-# PHP commands
-$ docker-compose exec php bash # Enter PHP bash
-$ symfony cache:clear # Clear Symfony's cache
-$ sudo chmod -R 777 var/cache var/logs var/sessions # Set cache/logs/sessions permissions
-
-# MySQL commands
-$ docker-compose exec db mysql --version # Check MySQL version
-$ docker-compose exec db mysql -u root -p # Connect to MySQL command line
-
-# Retrieve an IP Address (here for the nginx container)
-$ docker inspect --format '{{ .NetworkSettings.Networks.dockersymfony_default.IPAddress }}' $(docker ps -f name=nginx -q)
-$ docker inspect $(docker ps -f name=nginx -q) | grep IPAddress | grep -o -E '[0-9\.]+'
-```
+:notebook: More information and useful stuff in the [wiki](https://github.com/carlosas/full-docker-for-symfony-3/wiki).
