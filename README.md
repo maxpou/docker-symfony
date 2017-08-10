@@ -5,7 +5,7 @@
 
 ![](doc/schema.png)
 
-:warning: This stack needs docker and docker-compose to be installed.
+:information_source: This stack needs docker and docker-compose to be installed.
 
 ## Installation
 
