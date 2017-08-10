@@ -7,7 +7,7 @@ RUN curl -sS https://getcomposer.org/installer | php --install-dir=/usr/local/bi
 RUN composer --version
 
 # Set timezone
-ENV TZ=Europe/Paris
+ENV TZ=Europe/Madrid
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 RUN printf '[PHP]\ndate.timezone = "%s"\n', $TZ > /usr/local/etc/php/conf.d/tzone.ini
 
