@@ -23,8 +23,6 @@ services:
             - php
         volumes:
             - ./logs/nginx/:/var/log/nginx
-        environment:
-            - VIRTUAL_HOST=symfony.dev
     elk:
         image: willdurand/elk
         ports:
