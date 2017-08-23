@@ -10,6 +10,10 @@ services:
             MYSQL_DATABASE: ${MYSQL_DATABASE}
             MYSQL_USER: ${MYSQL_USER}
             MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    redis:
+        image: redis:alpine
+        expose:
+            - 6379
     php:
         build:
             context: php7-fpm
@@ -18,6 +22,8 @@ services:
         volumes:
             - ${SYMFONY_APP_PATH}:/var/www/symfony
             - ./logs/symfony:/var/www/symfony/app/logs
+        links:
+            - redis
     nginx:
         build: nginx
         ports:
