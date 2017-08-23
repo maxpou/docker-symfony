@@ -1,4 +1,5 @@
 FROM php:7.0-fpm
+ARG TIMEZONE
 
 RUN apt-get update && apt-get install -y git unzip
 
@@ -7,9 +8,8 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 RUN composer --version
 
 # Set timezone
-ENV TZ=Europe/Madrid
-RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
-RUN printf '[PHP]\ndate.timezone = "%s"\n', $TZ > /usr/local/etc/php/conf.d/tzone.ini
+RUN ln -snf /usr/share/zoneinfo/${TIMEZONE} /etc/localtime && echo ${TIMEZONE} > /etc/timezone
+RUN printf '[PHP]\ndate.timezone = "%s"\n', ${TIMEZONE} > /usr/local/etc/php/conf.d/tzone.ini
 
 # Install PDO extensions
 RUN docker-php-ext-install pdo pdo_mysql
