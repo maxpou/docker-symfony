@@ -5,7 +5,19 @@
 
 ![](doc/schema.png)
 
-:information_source: This stack needs docker and docker-compose to be installed.
+## Basic info
+
+* [nginx](https://nginx.org/)
+* [PHP-FPM](https://php-fpm.org/)
+* [MySQL](https://www.mysql.com/)
+* [Redis](https://redis.io/)
+* [Elasticsearch](https://www.elastic.co/products/elasticsearch)
+* [Logstash](https://www.elastic.co/products/logstash)
+* [Kibana](https://www.elastic.co/products/kibana)
+
+## Previous requirements
+
+This stack needs [docker](https://www.docker.com/) and [docker-compose](https://docs.docker.com/compose/) to be installed.
 
 ## Installation
 
