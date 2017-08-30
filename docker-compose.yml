@@ -2,6 +2,7 @@ version: '2'
 
 services:
     db:
+        container_name: container_mysql
         image: mysql
         volumes:
             - "./.data/db:/var/lib/mysql"
@@ -11,10 +12,12 @@ services:
             MYSQL_USER: ${MYSQL_USER}
             MYSQL_PASSWORD: ${MYSQL_PASSWORD}
     redis:
+        container_name: container_redis
         image: redis:alpine
         expose:
             - 6379
     php:
+        container_name: container_phpfpm
         build:
             context: php7-fpm
             args:
@@ -25,6 +28,7 @@ services:
         links:
             - redis
     nginx:
+        container_name: container_nginx
         build: nginx
         ports:
             - 80:80
@@ -33,6 +37,7 @@ services:
         volumes:
             - ./logs/nginx/:/var/log/nginx
     elk:
+        container_name: container_elk
         image: willdurand/elk
         ports:
             - 81:80
@@ -42,3 +47,18 @@ services:
         volumes_from:
             - php
             - nginx
+    phpmyadmin:
+        container_name: container_phpmyadmin
+        image: phpmyadmin/phpmyadmin
+        ports:
+            - "8080:80"
+    rabbit:
+        container_name: container_rabbit
+        hostname: rabbit
+        image: rabbitmq:3-management
+        environment:
+            RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER}
+            RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD}
+        ports:
+            - "5672:5672"
+            - "15672:15672"
