@@ -5,6 +5,7 @@ ARG TIMEZONE
 MAINTAINER Maxence POUTORD <maxence.poutord@gmail.com>
 
 RUN apt-get update && apt-get install -y \
+    openssl \
     git \
     unzip
 
