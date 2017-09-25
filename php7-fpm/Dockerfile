@@ -1,5 +1,5 @@
-# See https://github.com/docker-library/php/blob/4677ca134fe48d20c820a19becb99198824d78e3/7.0/fpm/Dockerfile
-FROM php:7.0-fpm
+# See https://github.com/docker-library/php/blob/master/7.1/fpm/Dockerfile
+FROM php:7.1-fpm
 ARG TIMEZONE
 
 MAINTAINER Maxence POUTORD <maxence.poutord@gmail.com>
