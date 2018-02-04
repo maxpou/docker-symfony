@@ -19,13 +19,17 @@ services:
             - ${SYMFONY_APP_PATH}:/var/www/symfony
             - ./logs/symfony:/var/www/symfony/app/logs
     nginx:
-        build: nginx
+        image: nginx
         ports:
             - 80:80
         volumes_from:
             - php
         volumes:
+            - ./nginx/default.template:/etc/nginx/conf.d/default.template
             - ./logs/nginx/:/var/log/nginx
+        environment:
+            - NGINX_HOST=${NGINX_HOST}
+        command: /bin/sh -c "envsubst '$$NGINX_HOST' < /etc/nginx/conf.d/default.template > /etc/nginx/conf.d/default.conf && nginx -g 'daemon off;'"
     elk:
         image: willdurand/elk
         ports:
