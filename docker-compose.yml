@@ -5,6 +5,7 @@ services:
         image: mysql
         volumes:
             - "./.data/db:/var/lib/mysql"
+        command: --max_allowed_packet=64M
         environment:
             MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
             MYSQL_DATABASE: ${MYSQL_DATABASE}
@@ -16,16 +17,21 @@ services:
             args:
                 TIMEZONE: ${TIMEZONE}
         volumes:
-            - ${SYMFONY_APP_PATH}:/var/www/symfony
-            - ./logs/symfony:/var/www/symfony/app/logs
+            - ${BACK_APP_PATH}:/var/www/tagwalk-admin
+            - ${FRONT_APP_PATH}:/var/www/tagwalk-www
+            - ./logs/symfony/admin:/var/www/tagwalk-admin/app/logs
+            - ./logs/symfony/www:/var/www/tagwalk-www/app/logs
+            - ./php7-fpm/php.ini:/usr/local/etc/php/conf.d/custom.ini
     nginx:
         build: nginx
         ports:
             - 80:80
+            - 443:443
         volumes_from:
             - php
         volumes:
             - ./logs/nginx/:/var/log/nginx
+            - ./nginx/certs:/etc/nginx/ssl
     elk:
         image: willdurand/elk
         ports:
@@ -36,3 +42,11 @@ services:
         volumes_from:
             - php
             - nginx
+    ftpd:
+        build: proftpd
+        ports:
+            - 20:20
+            - 21:21
+        volumes:
+          - ../uploads:/home/ftp/uploads
+        privileged: true
