@@ -22,7 +22,7 @@ Docker-symfony gives you everything you need for developing Symfony application.
     $ docker-compose up -d
     ```
 
-3. Update your system host file (add symfony.local)
+3. Update your system host file (add tag-walk.dev)
 
     ```bash
     # UNIX only: get containers IP address and update host (replace IP according to your configuration) (on Windows, edit C:\Windows\System32\drivers\etc\hosts)
@@ -45,27 +45,46 @@ Docker-symfony gives you everything you need for developing Symfony application.
         ```bash
         $ docker-compose exec php bash
         $ composer install
-        # Symfony2
         $ sf doctrine:database:create
         $ sf doctrine:schema:update --force
-        # Only if you have `doctrine/doctrine-fixtures-bundle` installed
-        $ sf doctrine:fixtures:load --no-interaction
-        # Symfony3
-        $ sf3 doctrine:database:create
-        $ sf3 doctrine:schema:update --force
-        # Only if you have `doctrine/doctrine-fixtures-bundle` installed
-        $ sf3 doctrine:fixtures:load --no-interaction
+        $ npm install
+        $ bower install
+        $ grunt
         ```
+        
+5. import database
 
-5. Enjoy :-)
+    ```bash
+    docker-compose exec db mysql tagwalk -uroot -p"root" < dump.sql
+    ```
+    
+6. Configure FTP server
+
+    ```bash
+    docker-compose exec ftpd bash
+    /usr/sbin/ftpasswd --passwd --file=/etc/proftpd/ftpd.passwd --name=tagwalk --uid=1000 --gid=1000 --home=/home/ftp --shell=/bin/false
+    ```
+
+7. Generate selfsigned ssl cert on nginx
+
+    ```bash
+    docker-compose exec nginx bash
+    cd /etc/nginx/ssl
+    openssl genrsa -des3 -out server.key 1024
+    openssl req -new -key server.key -out server.csr
+    cp server.key server.key.org
+    openssl rsa -in server.key.org -out server.key
+    openssl x509 -req -days 365 -in server.csr -signkey server.key -out server.crt
+    ```
+    
 
 ## Usage
 
 Just run `docker-compose up -d`, then:
 
-* Symfony app: visit [symfony.local](http://symfony.local)  
-* Symfony dev mode: visit [symfony.local/app_dev.php](http://symfony.local/app_dev.php)  
-* Logs (Kibana): [symfony.local:81](http://symfony.local:81)
+* Symfony app: visit [tag-walk.dev](http://tag-walk.dev)  
+* Symfony dev mode: visit [tag-walk.dev/app_dev.php](http://tag-walk.dev/app_dev.php)  
+* Logs (Kibana): [tag-walk.dev:81](http://tag-walk.dev:81)
 * Logs (files location): logs/nginx and logs/symfony
 
 ## Customize
@@ -85,12 +104,13 @@ This results in the following running containers:
 
 ```bash
 $ docker-compose ps
-           Name                          Command               State              Ports            
---------------------------------------------------------------------------------------------------
-dockersymfony_db_1            /entrypoint.sh mysqld            Up      0.0.0.0:3306->3306/tcp      
-dockersymfony_elk_1           /usr/bin/supervisord -n -c ...   Up      0.0.0.0:81->80/tcp          
-dockersymfony_nginx_1         nginx                            Up      443/tcp, 0.0.0.0:80->80/tcp
-dockersymfony_php_1           php-fpm                          Up      0.0.0.0:9000->9000/tcp      
+        Name                       Command               State                                Ports
+---------------------------------------------------------------------------------------------------------------------------------
+dockersymfony_db_1      docker-entrypoint.sh --max ...   Up      3306/tcp
+dockersymfony_elk_1     /usr/bin/supervisord -n -c ...   Up      0.0.0.0:81->80/tcp
+dockersymfony_ftpd_1    proftpd --nodaemon               Up      0.0.0.0:32769->1220/tcp, 0.0.0.0:32768->1281/tcp, 20/tcp, 21/tcp
+dockersymfony_nginx_1   nginx                            Up      0.0.0.0:443->443/tcp, 0.0.0.0:80->80/tcp
+dockersymfony_php_1     docker-php-entrypoint php-fpm    Up      9000/tcp
 ```
 
 ## Useful commands
@@ -99,26 +119,12 @@ dockersymfony_php_1           php-fpm                          Up      0.0.0.0:9
 # bash commands
 $ docker-compose exec php bash
 
-# Composer (e.g. composer update)
-$ docker-compose exec php composer update
-
-# SF commands (Tips: there is an alias inside php container)
-$ docker-compose exec php php /var/www/symfony/app/console cache:clear # Symfony2
-$ docker-compose exec php php /var/www/symfony/bin/console cache:clear # Symfony3
-# Same command by using alias
-$ docker-compose exec php bash
-$ sf cache:clear
-
 # Retrieve an IP Address (here for the nginx container)
 $ docker inspect --format '{{ .NetworkSettings.Networks.dockersymfony_default.IPAddress }}' $(docker ps -f name=nginx -q)
 $ docker inspect $(docker ps -f name=nginx -q) | grep IPAddress
 
 # MySQL commands
 $ docker-compose exec db mysql -uroot -p"root"
-
-# F***ing cache/logs folder
-$ sudo chmod -R 777 app/cache app/logs # Symfony2
-$ sudo chmod -R 777 var/cache var/logs var/sessions # Symfony3
 
 # Check CPU consumption
 $ docker stats $(docker inspect -f "{{ .Name }}" $(docker ps -q))
