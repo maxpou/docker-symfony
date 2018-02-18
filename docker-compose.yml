@@ -22,6 +22,7 @@ services:
             - ./logs/symfony/admin:/var/www/tagwalk-admin/app/logs
             - ./logs/symfony/www:/var/www/tagwalk-www/app/logs
             - ./php7-fpm/php.ini:/usr/local/etc/php/conf.d/custom.ini
+            - ../uploads:/var/www/tagwalk-admin/uploads
     nginx:
         build: nginx
         ports:
