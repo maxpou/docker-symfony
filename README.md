@@ -49,7 +49,10 @@ Docker-symfony gives you everything you need for developing Symfony application.
         $ sf doctrine:schema:update --force
         $ npm install
         $ bower install
+        $ bower install video.js
         $ grunt
+        $ php app/console cache:clear
+        $ php app/console cache:clear --env=prod --no-debug
         ```
         
 5. import database
