@@ -14,15 +14,18 @@ Docker-symfony gives you everything you need for developing Symfony application.
     cp .env.dist .env
     ```
 
+2. import database
 
-2. Build/run containers with (with and without detached mode)
+    To load an SQL dump during the docker init process you have de place your dump file in the `./sql` folder
+
+3. Build/run containers with (with and without detached mode)
 
     ```bash
     $ docker-compose build
     $ docker-compose up -d
     ```
 
-3. Update your system host file (add tag-walk.dev)
+4. Update your system host file (add tag-walk.dev)
 
     ```bash
     # UNIX only: get containers IP address and update host (replace IP according to your configuration) (on Windows, edit C:\Windows\System32\drivers\etc\hosts)
@@ -31,7 +34,7 @@ Docker-symfony gives you everything you need for developing Symfony application.
 
     **Note:** For **OS X**, please take a look [here](https://docs.docker.com/docker-for-mac/networking/) and for **Windows** read [this](https://docs.docker.com/docker-for-windows/#/step-4-explore-the-application-and-run-examples) (4th step).
 
-4. Prepare Symfony app
+5. Prepare Symfony apps
     1. Update app/config/parameters.yml
 
         ```yml
@@ -40,28 +43,21 @@ Docker-symfony gives you everything you need for developing Symfony application.
             database_host: db
         ```
 
-    2. Composer install & create database
+    2. Composer install & create database (both apps)
 
         ```bash
         $ docker-compose exec php bash
         $ composer install
-        $ sf doctrine:database:create
-        $ sf doctrine:schema:update --force
         $ npm install
         $ bower install
-        $ bower install video.js
+        $ cd web/vendor/video.js && npm install && grunt dist
+        $ cd ../../..
         $ grunt
         $ php app/console cache:clear
         $ php app/console cache:clear --env=prod --no-debug
         ```
         
-5. import database
-
-    ```bash
-    docker-compose exec db mysql tagwalk -uroot -p"root" < dump.sql
-    ```
-    
-6. Configure FTP server
+6. Configure FTP server (or use existing one)
 
     ```bash
     docker-compose exec ftpd bash
@@ -85,10 +81,20 @@ Docker-symfony gives you everything you need for developing Symfony application.
 
 Just run `docker-compose up -d`, then:
 
-* Symfony app: visit [tag-walk.dev](http://tag-walk.dev)  
-* Symfony dev mode: visit [tag-walk.dev/app_dev.php](http://tag-walk.dev/app_dev.php)  
-* Logs (Kibana): [tag-walk.dev:81](http://tag-walk.dev:81)
+* Front (www) app: [tag-walk.dev](http://tag-walk.dev)  
+* Front (www) dev mode: [tag-walk.dev/app_dev.php](http://tag-walk.dev/app_dev.php)  
+* Back (admin) app: [admin.tag-walk.dev](https://admin.tag-walk.dev)  
+* Back (admin) dev mode: [admin.tag-walk.dev/app_dev.php](http://admin.tag-walk.dev/app_dev.php)  
+* Elasticsearch index: [tag-walk.dev:9200](http://tag-walk.dev:9200)
+* Logs (Kibana): [tag-walk.dev:5601](http://tag-walk.dev:5601)
 * Logs (files location): logs/nginx and logs/symfony
+
+## Granting database user connections from remote hosts
+
+```bash
+$ docker-compose exec db mysql -uroot -p"root"
+$ GRANT ALL PRIVILEGES ON *.* TO 'tagwalk'@'%' IDENTIFIED BY 'tagwalk' WITH GRANT OPTION;
+```
 
 ## Customize
 
@@ -137,6 +143,12 @@ $ docker rm $(docker ps -aq)
 
 # Delete all images
 $ docker rmi $(docker images -q)
+
+# List docker volume
+$ docker volume ls
+
+# Delete docker data volume
+$ docker volume rm dockersymfony_data-volume
 ```
 
 ## FAQ

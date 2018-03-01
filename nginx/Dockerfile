@@ -4,7 +4,8 @@ MAINTAINER FLORIAN AJIR <florian@tag-walk.com>
 
 RUN apt-get update && apt-get install -y \
     nginx \
-    openssl
+    openssl \
+    && rm -rf /var/lib/apt/lists/*
 
 # https support
 RUN rm -rf /etc/nginx/conf.d/*;

@@ -12,6 +12,7 @@ RUN apt-get update && apt-get install -y \
     geoip-database \
     git \
     libav-tools \
+    libicu-dev \
     libtool \
     make \
     nasm \
@@ -60,7 +61,7 @@ RUN printf '[PHP]\ndate.timezone = "%s"\n', ${TIMEZONE} > /usr/local/etc/php/con
 RUN "date"
 
 # Type docker-php-ext-install to see available extensions
-RUN docker-php-ext-install pdo pdo_mysql ftp
+RUN docker-php-ext-install pdo pdo_mysql ftp intl
 
 # install xdebug
 RUN pecl install xdebug
