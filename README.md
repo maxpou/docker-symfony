@@ -25,7 +25,7 @@ Docker-symfony gives you everything you need for developing Symfony application.
     $ docker-compose up -d
     ```
 
-4. Update your system host file (add tag-walk.dev)
+4. Update your system host file (add tag-walk.local)
 
     ```bash
     # UNIX only: get containers IP address and update host (replace IP according to your configuration) (on Windows, edit C:\Windows\System32\drivers\etc\hosts)
@@ -81,12 +81,12 @@ Docker-symfony gives you everything you need for developing Symfony application.
 
 Just run `docker-compose up -d`, then:
 
-* Front (www) app: [tag-walk.dev](http://tag-walk.dev)  
-* Front (www) dev mode: [tag-walk.dev/app_dev.php](http://tag-walk.dev/app_dev.php)  
-* Back (admin) app: [admin.tag-walk.dev](https://admin.tag-walk.dev)  
-* Back (admin) dev mode: [admin.tag-walk.dev/app_dev.php](http://admin.tag-walk.dev/app_dev.php)  
-* Elasticsearch index: [tag-walk.dev:9200](http://tag-walk.dev:9200)
-* Logs (Kibana): [tag-walk.dev:5601](http://tag-walk.dev:5601)
+* Front (www) app: [tag-walk.local](http://tag-walk.local)  
+* Front (www) dev mode: [tag-walk.local/app_dev.php](http://tag-walk.local/app_dev.php)  
+* Back (admin) app: [admin.tag-walk.local](https://admin.tag-walk.local)  
+* Back (admin) dev mode: [admin.tag-walk.local/app_dev.php](http://admin.tag-walk.local/app_dev.php)  
+* Elasticsearch index: [tag-walk.local:9200](http://tag-walk.local:9200)
+* Logs (Kibana): [tag-walk.local:5601](http://tag-walk.local:5601)
 * Logs (files location): logs/nginx and logs/symfony
 
 ## Granting database user connections from remote hosts
