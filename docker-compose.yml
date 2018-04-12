@@ -3,6 +3,7 @@ version: '2'
 services:
     db:
         image: mysql
+        container_name: docker-symfony-mysql
         volumes:
             - "./.data/db:/var/lib/mysql"
         environment:
@@ -10,16 +11,22 @@ services:
             MYSQL_DATABASE: ${MYSQL_DATABASE}
             MYSQL_USER: ${MYSQL_USER}
             MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+        ports:
+            - 3306:3306
     php:
         build:
             context: php7-fpm
             args:
                 TIMEZONE: ${TIMEZONE}
+        container_name: docker-symfony-php
         volumes:
             - ${SYMFONY_APP_PATH}:/var/www/symfony
             - ./logs/symfony:/var/www/symfony/app/logs
+        ports:
+            - 9000:9000
     nginx:
         build: nginx
+        container_name: docker-symfony-nginx
         ports:
             - 80:80
         volumes_from:
@@ -28,6 +35,7 @@ services:
             - ./logs/nginx/:/var/log/nginx
     elk:
         image: willdurand/elk
+        container_name: docker-symfony-elk
         ports:
             - 81:80
         volumes:
