@@ -21,7 +21,8 @@ services:
         container_name: docker-symfony-php
         volumes:
             - ${SYMFONY_APP_PATH}:/var/www/symfony
-            - ./logs/symfony:/var/www/symfony/app/logs
+            - ./logs/symfony:/var/www/symfony/var/logs
+            - ${SYMFONY_APP_PATH}:/var/www/symfony/var/logs
         ports:
             - 9000:9000
     nginx:

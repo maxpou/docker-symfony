@@ -8,11 +8,16 @@ LABEL maintainer="Julien DE CONTI <julien.de.conti@gmail.com>"
 RUN apt-get update && apt-get install -y \
     openssl \
     git \
-    unzip
+    unzip \
+    libicu-dev
 
 # Install Composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
     && composer --version
+
+# Install Symfony
+RUN curl -LsS https://symfony.com/installer -o /usr/local/bin/symfony \
+    && chmod a+x /usr/local/bin/symfony
 
 # Set timezone
 RUN ln -snf /usr/share/zoneinfo/${TIMEZONE} /etc/localtime && echo ${TIMEZONE} > /etc/timezone \
@@ -20,8 +25,14 @@ RUN ln -snf /usr/share/zoneinfo/${TIMEZONE} /etc/localtime && echo ${TIMEZONE} >
     && "date"
 
 # Type docker-php-ext-install to see available extensions
+# Install pdo mysql
 RUN docker-php-ext-install pdo pdo_mysql
 
+# Install symfony php-intl dependency
+RUN docker-php-ext-configure intl && docker-php-ext-install intl
+
+# Install php-opcache
+RUN docker-php-ext-install opcache && docker-php-ext-enable opcache
 
 # install xdebug
 RUN pecl install xdebug && docker-php-ext-enable xdebug
@@ -33,7 +44,6 @@ RUN echo "error_reporting = E_ALL" >> /usr/local/etc/php/conf.d/docker-php-ext-x
     && echo "xdebug.idekey=\"PHPSTORM\"" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
     && echo "xdebug.remote_port=9001" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
 
-RUN echo 'alias sf="php app/console"' >> ~/.bashrc \
-    && echo 'alias sf3="php bin/console"' >> ~/.bashrc
+RUN echo 'alias sf="php bin/console"' >> ~/.bashrc
 
 WORKDIR /var/www/symfony
