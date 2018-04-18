@@ -36,7 +36,9 @@ RUN export CFLAGS="$PHP_CFLAGS" CPPFLAGS="$PHP_CPPFLAGS" LDFLAGS="$PHP_LDFLAGS" 
     && rm -rf /var/lib/apt/lists/*
 
 RUN pecl install imagick-3.4.3
-RUN docker-php-ext-enable imagick
+     && docker-php-ext-enable imagick
+     && pecl install xdebug
+     && docker-php-ext-enable xdebug
 
 WORKDIR /source
 COPY mozjpeg-3.2-release-source.tar.gz /source
@@ -60,12 +62,8 @@ RUN ln -snf /usr/share/zoneinfo/${TIMEZONE} /etc/localtime && echo ${TIMEZONE} >
 RUN printf '[PHP]\ndate.timezone = "%s"\n', ${TIMEZONE} > /usr/local/etc/php/conf.d/tzone.ini
 RUN "date"
 
-# Type docker-php-ext-install to see available extensions
 RUN docker-php-ext-install pdo pdo_mysql ftp intl mbstring exif
 
-# install xdebug
-RUN pecl install xdebug
-RUN docker-php-ext-enable xdebug
 RUN echo "error_reporting = E_ALL" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
 RUN echo "display_startup_errors = On" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
 RUN echo "display_errors = On" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
