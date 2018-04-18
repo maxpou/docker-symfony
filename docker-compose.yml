@@ -23,7 +23,7 @@ services:
             args:
                 TIMEZONE: ${TIMEZONE}
         volumes:
-            - ${BACK_APP_PATH}:/var/www/tagwalk-admin
+            - ${BACK_APP_PATH}:/var/www/tagwalk-admin:rw
             - ${FRONT_APP_PATH}:/var/www/tagwalk-www
             - ./logs/symfony/admin:/var/www/tagwalk-admin/app/logs
             - ./logs/symfony/www:/var/www/tagwalk-www/app/logs
