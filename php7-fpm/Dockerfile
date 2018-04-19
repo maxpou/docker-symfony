@@ -35,9 +35,9 @@ RUN export CFLAGS="$PHP_CFLAGS" CPPFLAGS="$PHP_CPPFLAGS" LDFLAGS="$PHP_LDFLAGS" 
         libmagickwand-dev \
     && rm -rf /var/lib/apt/lists/*
 
-RUN pecl install imagick-3.4.3
-     && docker-php-ext-enable imagick
-     && pecl install xdebug
+RUN pecl install imagick-3.4.3 \
+     && docker-php-ext-enable imagick \
+     && pecl install xdebug \
      && docker-php-ext-enable xdebug
 
 WORKDIR /source
