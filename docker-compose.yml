@@ -22,6 +22,8 @@ services:
             context: php7-fpm
             args:
                 TIMEZONE: ${TIMEZONE}
+        environment:
+            COMPOSER_ALLOW_SUPERUSER: 1
         volumes:
             - ${BACK_APP_PATH}:/var/www/tagwalk-admin:rw
             - ${FRONT_APP_PATH}:/var/www/tagwalk-www

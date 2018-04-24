@@ -7,42 +7,42 @@ MAINTAINER Florian Ajir <florian@tag-walk.com>
 RUN apt-get update && apt-get install -y \
     autoconf \
     automake \
+    build-essential \
     curl \
-    ftp\
+    ftp \
     geoip-database \
     git \
     libav-tools \
     libicu-dev \
+    libssl-dev \
     libtool \
     make \
     nasm \
-    npm \
     openssl \
     python-geoip \
     unzip
-#&& rm -rf /var/lib/apt/lists/*
 
-#RUN apt-get install -y -qq npm
-RUN ln -s /usr/bin/nodejs /usr/bin/node
+#install nodejs
+RUN curl -sL https://deb.nodesource.com/setup_8.x | bash -
+RUN apt-get install -y nodejs
 
 # install bower & grunt
 RUN npm install -g bower grunt-cli
 RUN echo '{ "allow_root": true }' > /root/.bowerrc
 
-# Imagick
+# Php modules : imagick, xdebug
 RUN export CFLAGS="$PHP_CFLAGS" CPPFLAGS="$PHP_CPPFLAGS" LDFLAGS="$PHP_LDFLAGS" \
     && apt-get install -y --no-install-recommends \
         libmagickwand-dev \
     && rm -rf /var/lib/apt/lists/*
+RUN pecl install imagick-3.4.3 \
+    && pecl install xdebug
+RUN docker-php-ext-enable imagick xdebug
+RUN docker-php-ext-install pdo pdo_mysql ftp intl mbstring exif
 
-RUN pecl install imagick-3.4.3
-     && docker-php-ext-enable imagick
-     && pecl install xdebug
-     && docker-php-ext-enable xdebug
-
+# Install mozjpeg
 WORKDIR /source
 COPY mozjpeg-3.2-release-source.tar.gz /source
-# mozjpeg
 RUN tar -zxf /source/mozjpeg-3.2-release-source.tar.gz \
     && mv mozjpeg /opt \
     && cd /opt/mozjpeg \
@@ -50,6 +50,7 @@ RUN tar -zxf /source/mozjpeg-3.2-release-source.tar.gz \
     && ./configure --prefix=/opt/mozjpeg \
     && make install
 
+# Install wkhtmltox
 COPY wkhtmltox-0.12.4_linux-generic-i386.tar.xz /source
 RUN tar -xJf /source/wkhtmltox-0.12.4_linux-generic-i386.tar.xz -C /opt
 
@@ -62,8 +63,7 @@ RUN ln -snf /usr/share/zoneinfo/${TIMEZONE} /etc/localtime && echo ${TIMEZONE} >
 RUN printf '[PHP]\ndate.timezone = "%s"\n', ${TIMEZONE} > /usr/local/etc/php/conf.d/tzone.ini
 RUN "date"
 
-RUN docker-php-ext-install pdo pdo_mysql ftp intl mbstring exif
-
+# PHP configuration
 RUN echo "error_reporting = E_ALL" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
 RUN echo "display_startup_errors = On" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
 RUN echo "display_errors = On" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
@@ -73,6 +73,5 @@ RUN echo "xdebug.idekey=\"PHPSTORM\"" >> /usr/local/etc/php/conf.d/docker-php-ex
 RUN echo "xdebug.remote_port=9001" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
 
 RUN echo 'alias sf="php app/console"' >> ~/.bashrc
-RUN echo 'alias sf3="php bin/console"' >> ~/.bashrc
 
 WORKDIR /var/www
