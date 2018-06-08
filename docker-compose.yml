@@ -3,6 +3,7 @@ version: '2'
 services:
     db:
         image: mysql
+        container_name: docker-symfony-mysql
         volumes:
             - "./.data/db:/var/lib/mysql"
         environment:
@@ -10,24 +11,36 @@ services:
             MYSQL_DATABASE: ${MYSQL_DATABASE}
             MYSQL_USER: ${MYSQL_USER}
             MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+        ports:
+            - 3306:3306
     php:
         build:
             context: php7-fpm
             args:
                 TIMEZONE: ${TIMEZONE}
+        container_name: docker-symfony-php
         volumes:
             - ${SYMFONY_APP_PATH}:/var/www/symfony
-            - ./logs/symfony:/var/www/symfony/app/logs
+            - ./logs/symfony:/var/www/symfony/var/logs
+            - ${SYMFONY_APP_PATH}:/var/www/symfony/var/logs
+        ports:
+            - 9000:9000
     nginx:
-        build: nginx
+        image: nginx
+        container_name: docker-symfony-nginx
         ports:
             - 80:80
         volumes_from:
             - php
         volumes:
+            - ./nginx/default.template:/etc/nginx/conf.d/default.template
             - ./logs/nginx/:/var/log/nginx
+        environment:
+            - SYMFONY_NGINX_HOST=${SYMFONY_NGINX_HOST}
+        command: /bin/sh -c "envsubst '$$SYMFONY_NGINX_HOST' < /etc/nginx/conf.d/default.template > /etc/nginx/conf.d/default.conf && nginx -g 'daemon off;'"
     elk:
         image: willdurand/elk
+        container_name: docker-symfony-elk
         ports:
             - 81:80
         volumes:
