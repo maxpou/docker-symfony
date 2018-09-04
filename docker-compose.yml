@@ -1,10 +1,14 @@
-version: '2.4'
+version: '3.3'
 services:
     application:
         build: code
         volumes:
-            - ./app:/var/www/laravel
-            - ./logs/laravel:/var/www/laravel/storage/logs
+            - type: bind
+                source: ./app
+                target: /var/www/laravel
+            - type: bind
+                source: ./logs/laravel
+                target: /var/www/laravel/storage/logs
         tty: true
     db:
         image: mariadb:latest
@@ -17,9 +21,9 @@ services:
         ports:
             - 3306:3306
     redis:
-    image: redis:alpine
-    ports:
-        - 6379:6379
+        image: redis:alpine
+        ports:
+            - 6379:6379
     php:
         build: php7-fpm
         environment:
@@ -39,14 +43,20 @@ services:
         volumes_from:
             - application
         volumes:
-            - ./logs/nginx/:/var/log/nginx
+            - type: bind
+                source: ./logs/nginx/
+                target: /var/log/nginx
         ports:
             - 80:80
     elk:
         image: willdurand/elk
         volumes:
-            - ./elk/logstash:/etc/logstash
-            - ./elk/logstash/patterns:/opt/logstash/patterns
+            - type: bind
+                source: ./elk/logstash
+                target: /etc/logstash
+            - type: bind
+                source: ./elk/logstash/patterns
+                target: /opt/logstash/patterns
         volumes_from:
             - application
             - php
@@ -58,3 +68,7 @@ services:
     ports:
         - 82:1080
         - 25:1025
+
+volumes:
+  data:
+    driver: mydriver
