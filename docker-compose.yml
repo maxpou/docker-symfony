@@ -14,8 +14,9 @@ services:
             TEST_DB_NAME: laravel_test
             MYSQL_USER: laravel
             MYSQL_PASSWORD: laravel
+        # MySQL / MariaDB server is mounted on :3307 on host
         ports:
-            - 3306:3306
+            - 3306:3307
     redis:
         image: redis:alpine
         ports:
