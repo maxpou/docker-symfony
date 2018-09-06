@@ -1,58 +1,61 @@
-application:
-    build: code
-    volumes:
-        - ./app:/var/www/laravel
-        - ./logs/laravel:/var/www/laravel/storage/logs
-    tty: true
-db:
-    image: mariadb:latest
-    environment:
-        MYSQL_ROOT_PASSWORD: toor
-        MYSQL_DATABASE: laravel
-        TEST_DB_NAME: laravel_test
-        MYSQL_USER: laravel
-        MYSQL_PASSWORD: laravel
-    ports:
-        - 3306:3306
-redis:
-  image: redis:alpine
-  ports:
-      - 6379:6379
-php:
-    build: php7-fpm
-    environment:
-        MAIL_ENCRYPTION: 0
-        MAIL_PRETEND: 0
-        MAIL_USERNAME: null
-        MAIL_PASSWORD: null
-    volumes_from:
-        - application
-    links:
-        - db
-        - redis
-nginx:
-    build: nginx
-    links:
-        - php
-    volumes_from:
-        - application
-    volumes:
-        - ./logs/nginx/:/var/log/nginx
-    ports:
-        - 80:80
-elk:
-    image: willdurand/elk
-    volumes:
-        - ./elk/logstash:/etc/logstash
-        - ./elk/logstash/patterns:/opt/logstash/patterns
-    volumes_from:
-        - application
-        - php
-        - nginx
-    ports:
-        - 81:80
-mail:
-  build: mailcatcher
-  ports:
-    - 82:1080
-    - 25:1025
+version: '2.4'
+services:
+    application:
+        build: code
+        volumes:
+            - ./app:/var/www/laravel
+            - ./logs/laravel:/var/www/laravel/storage/logs
+        tty: true
+    db:
+        image: mariadb:latest
+        environment:
+            MYSQL_ROOT_PASSWORD: toor
+            MYSQL_DATABASE: laravel
+            TEST_DB_NAME: laravel_test
+            MYSQL_USER: laravel
+            MYSQL_PASSWORD: laravel
+        # MySQL / MariaDB server is mounted on :3307 on host
+        ports:
+            - 3306:3307
+    redis:
+        image: redis:alpine
+        ports:
+            - 6379:6379
+    php:
+        build: php7-fpm
+        environment:
+            MAIL_ENCRYPTION: 0
+            MAIL_PRETEND: 0
+            MAIL_USERNAME: null
+            MAIL_PASSWORD: null
+        volumes_from:
+            - application
+        links:
+            - db
+            - redis
+    nginx:
+        build: nginx
+        links:
+            - php
+        volumes_from:
+            - application
+        volumes:
+            - ./logs/nginx/:/var/log/nginx
+        ports:
+            - 80:80
+    elk:
+        image: willdurand/elk
+        volumes:
+            - ./elk/logstash:/etc/logstash
+            - ./elk/logstash/patterns:/opt/logstash/patterns
+        volumes_from:
+            - application
+            - php
+            - nginx
+        ports:
+            - 81:80
+    mail:
+        build: mailcatcher
+        ports:
+            - 82:1080
+            - 25:1025
