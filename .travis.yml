@@ -1,7 +1,7 @@
 sudo: required
 
 env:
-  DOCKER_COMPOSE_VERSION: 2.4
+  DOCKER_COMPOSE_VERSION: 1.22.0
 
 services:
   - docker
