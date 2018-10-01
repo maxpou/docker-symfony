@@ -1,38 +1,64 @@
 version: '2'
 
+volumes:
+  data-volume:
+
 services:
     db:
-        image: mysql
-        volumes:
-            - "./.data/db:/var/lib/mysql"
+        image: mariadb:10.0
+        command: --max_allowed_packet=64M
         environment:
             MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
             MYSQL_DATABASE: ${MYSQL_DATABASE}
             MYSQL_USER: ${MYSQL_USER}
             MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+        volumes:
+            - data-volume:/var/lib/mysql
+            - ./sql:/docker-entrypoint-initdb.d/
+        ports:
+            - 3306:3306
     php:
         build:
             context: php7-fpm
             args:
                 TIMEZONE: ${TIMEZONE}
+        environment:
+            COMPOSER_ALLOW_SUPERUSER: 1
         volumes:
-            - ${SYMFONY_APP_PATH}:/var/www/symfony
-            - ./logs/symfony:/var/www/symfony/app/logs
+            - ${BACK_APP_PATH}:/var/www/tagwalk-admin:rw
+            - ${FRONT_APP_PATH}:/var/www/tagwalk-www
+            - ./logs/symfony/admin:/var/www/tagwalk-admin/app/logs
+            - ./logs/symfony/www:/var/www/tagwalk-www/app/logs
+            - ./php7-fpm/php.ini:/usr/local/etc/php/conf.d/custom.ini
+            - ../uploads:/var/www/tagwalk-admin/uploads
     nginx:
         build: nginx
         ports:
             - 80:80
+            - 443:443
         volumes_from:
             - php
         volumes:
             - ./logs/nginx/:/var/log/nginx
+            - ./nginx/certs:/etc/nginx/ssl
     elk:
-        image: willdurand/elk
+        build: elk
         ports:
-            - 81:80
+            - 5601:5601
+            - 9200:9200
+            - 5044:5044
         volumes:
-            - ./elk/logstash:/etc/logstash
             - ./elk/logstash/patterns:/opt/logstash/patterns
+            - ./elk/logstash/driver:/opt/logstash/driver
+            - ./elk/logstash/conf:/etc/logstash/conf.d
         volumes_from:
             - php
             - nginx
+    ftpd:
+        build: proftpd
+        ports:
+            - 20:20
+            - 21:21
+        volumes:
+          - ../uploads:/home/ftp/uploads
+        privileged: true
