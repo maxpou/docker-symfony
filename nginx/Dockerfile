@@ -1,8 +1,6 @@
-FROM debian:jessie
+FROM ubuntu:latest
 
-MAINTAINER Purinda Gunasekara <purinda@gmail.com>
-
-RUN apt-get update && apt-get install -y \
+RUN apt update && apt install -y \
     nginx
 
 ADD nginx.conf /etc/nginx/

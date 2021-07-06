@@ -1,8 +1,9 @@
-version: '2.4'
+version: '3'
 services:
     application:
         build: code
         volumes:
+            # Symlink or setup Laravel/Lumen on ./app directory.
             - ./app:/var/www/laravel
             - ./logs/laravel:/var/www/laravel/storage/logs
         tty: true
@@ -14,9 +15,9 @@ services:
             TEST_DB_NAME: laravel_test
             MYSQL_USER: laravel
             MYSQL_PASSWORD: laravel
-        # MySQL / MariaDB server is mounted on :3307 on host
         ports:
-            - 3306:3307
+            # MariaDB bound on port 3307 on host
+            - 3306:3306
     redis:
         image: redis:alpine
         ports:

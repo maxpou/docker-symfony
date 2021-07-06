@@ -1,5 +1,3 @@
-FROM debian:jessie
-
-MAINTAINER Purinda Gunasekara <purinda@gmail.com>
+FROM alpine:latest
 
 VOLUME /var/www/laravel
