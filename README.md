@@ -4,7 +4,7 @@
 
 **The idea of the project is to provide a pre-configured docker platform for Laravel and Lumen apps to get them up and running fast.**
 
-*Credit: this is a kind of fork from [maxpou/docker-symfony](https://github.com/maxpou/docker-symfony). Thanks to him :-)* 
+*Credit: this is a fork from [maxpou/docker-symfony](https://github.com/maxpou/docker-symfony). Thanks to him :-)* 
 I have made the number of changes to work with Laravel or Lumen apps and modified platform level commands (`artisan`, `composer`, `mysql`) quite easy to access.
 
 ![Container Architecture](https://raw.githubusercontent.com/purinda/docker-laravel/master/docs/container-architecture.png)
@@ -12,7 +12,7 @@ I have made the number of changes to work with Laravel or Lumen apps and modifie
 ## Installation
 
 I assume you have `docker-compose` installed and either **docker-engine** running locally (Linux) or have **docker-machine** (installed via [docker-toolbox](https://www.docker.com/products/docker-toolbox) on OSX, Windows) 
-configured on the computer you use.
+configured on the computer you use. _NOTE: if you use docker-machine (deprecated project so recommend not to) you may need to use the docker-machine IP address instead of `localhost` URLs mentioned below_
 
 1. Retrieve git project
 
@@ -30,23 +30,7 @@ configured on the computer you use.
     $ docker-compose up -d
     ```
 
-5. Update your host file (add `app.dev`)
-
-    ```bash
-    # get containers IP address and update host (replace IP according to your configuration )
-    $ docker inspect --format '{{ .NetworkSettings.IPAddress }}' $(docker ps -f name=nginx -q)
-    $ sudo echo "10.211.55.7 app.dev" >> /etc/hosts
-    ```
-
-    If you use `docker-machine` (mainly OSX or Windows) then run the following to get IP address of the vm. 
-
-    ```bash
-    $ docker-machine ip <machine-name>
-    $ echo "10.211.55.7 app.dev" | sudo tee -a /etc/hosts
-    ```
-
-
-6. Prepare Laravel/Lumen app
+5. Prepare Laravel/Lumen app
     1. Update app/.env (adapt hosts according to previous results)
 
         ```ini
@@ -54,14 +38,14 @@ configured on the computer you use.
         DB_CONNECTION=mysql
         DB_DATABASE=laravel
         DB_DATABASE_TEST=laravel_test
-        DB_HOST=app.dev
+        DB_HOST=db
         DB_PORT=3306
         DB_USERNAME=laravel
         DB_PASSWORD=laravel
 
         # Docker SMTP MailCatcher configuration
         MAIL_DRIVER=smtp
-        MAIL_HOST=app.dev
+        MAIL_HOST=mailcatcher
         MAIL_PORT=25
         MAIL_FROM_ADDRESS=docker@local
         MAIL_FROM_NAME="Docker"
@@ -73,14 +57,14 @@ configured on the computer you use.
         $ docker-compose exec php composer install
         ```
 
-7. Enjoy :-)
+6. Enjoy 😀
 
 ## How to use
 
-* Laravel app: visit [app.dev](http://app.dev)  
-* Logs (Kibana): [app.dev:81](http://app.dev:81)
+* Laravel app: visit [localhost](http://localhost)
+* Logs (Kibana): [localhost:81](http://localhost:81)
 * Logs (files location): logs/nginx and logs/laravel
-* MailCatcher: [app.dev:82](http://app.dev:82)
+* MailCatcher: [localhost:82](http://localhost:82)
  - For instructions please refer to https://mailcatcher.me/
 
 ## How it works?
@@ -98,14 +82,15 @@ This results in the following running containers:
 
 ```bash
 $ docker-compose ps
-           Name                          Command               State              Ports
---------------------------------------------------------------------------------------------------
-dockerlaravel_application_1   /bin/bash                        Up
-dockerlaravel_db_1            docker-entrypoint.sh mysqld      Up      0.0.0.0:3306->3306/tcp
-dockerlaravel_elk_1           /usr/bin/supervisord -n -c ...   Up      0.0.0.0:81->80/tcp
-dockerlaravel_nginx_1         nginx                            Up      443/tcp, 0.0.0.0:80->80/tcp
-dockerlaravel_php_1           php-fpm                          Up      9000/tcp
-dockerlaravel_redis_1         docker-entrypoint.sh redis ...   Up      0.0.0.0:6379->6379/tcp   
+            Name                          Command               State                                     Ports
+--------------------------------------------------------------------------------------------------------------------------------------------------
+docker-laravel_application_1   /bin/sh                          Up
+docker-laravel_db_1            docker-entrypoint.sh mysqld      Up      3306/tcp
+docker-laravel_elk_1           /usr/bin/supervisord -n -c ...   Up      0.0.0.0:81->80/tcp,:::81->80/tcp
+docker-laravel_mailcatcher_1   /bin/sh -c mailcatcher -f  ...   Up      0.0.0.0:25->1025/tcp,:::25->1025/tcp, 0.0.0.0:82->1080/tcp,:::82->1080/tcp
+docker-laravel_nginx_1         nginx                            Up      443/tcp, 0.0.0.0:80->80/tcp,:::80->80/tcp
+docker-laravel_php_1           docker-php-entrypoint php-fpm    Up      9000/tcp
+docker-laravel_redis_1         docker-entrypoint.sh redis ...   Up      6379/tcp
 ```
 
 ## Useful commands
